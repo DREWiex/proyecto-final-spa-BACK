@@ -14,6 +14,9 @@ app.use(express.urlencoded({ extended: false }));
 // parse application/json
 app.use(express.json());
 
+//routes
+app.use('/api/v1/users', require('./routers/usersRouter')); // users API
+
 // 404
 app.use((req, res, next) => {
 
