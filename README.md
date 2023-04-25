@@ -1,3 +1,2 @@
-# Proyecto final SPA
-# Study Rooms
+# Proyecto final SPA - Studyverse
 ## Desarrollador: Andrés León

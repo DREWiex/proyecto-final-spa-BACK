@@ -19,11 +19,11 @@ router.get('/:email', getUserByEmail);
 // ADD USER - crear un nuevo usuario (form register / dashboard admin)
 router.post('/', addUser);
 
-// UPDATE USER - editar un usuario según su e-mail (front: mi perfil / dashboard admin)
-router.put('/:email', updateUser);
+// UPDATE USER - editar un usuario según su id (front: mi perfil / dashboard admin)
+router.put('/:id', updateUser);
 
-//DELETE USER - eliminar un usuario según su e-mail (front: mi perfil / dashboard admin)
-router.delete('/:email', deleteUser);
+//DELETE USER - eliminar un usuario según su id (front: mi perfil / dashboard admin)
+router.delete('/:id', deleteUser);
 
 
 module.exports = router;
