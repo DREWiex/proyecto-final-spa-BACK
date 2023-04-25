@@ -89,7 +89,7 @@ const addUser = async (req, res) => {
 
     const { email } = req.body; // destructuración de la propiedad 'email' del objeto req.body
 
-    try {
+    try{
 
         const { rowCount } = await modelGetUserByEmail(email);
 
@@ -112,7 +112,7 @@ const addUser = async (req, res) => {
 
         };
 
-    } catch (error) {
+    }catch (error){
 
         console.log(error);
 
@@ -134,15 +134,15 @@ const updateUser = async (req, res) => {
     const { email } = req.body; // destructuración de la propiedad 'email' del objeto req.body
 
     const data = {
-        id,
+        user_id: id, // renombro la propiedad para que coincida con el modelo
         ...req.body // spread de todas las propiedades que recibe el objeto req.body del form (mi perfil –usuario– y dashboard –admin–)
     };
 
-    try {
+    try{
 
         const { rowCount, rows } = await modelGetUserByEmail(email);
 
-        if(rowCount == 0){ // condicional: si el e-mail no existe, se procede a la actualización
+        if(rowCount == 0){ // condicional: si el e-mail no existe, el usuario se actualiza
 
             await modelUpdateUser(data);
 
@@ -158,7 +158,7 @@ const updateUser = async (req, res) => {
 
             const [{ user_id }] = rows; // destructuración de la propiedad 'user_id' del array de objetos de la propiedad 'rows' que devuelve el objeto JSON de la respuesta del 'modelGetUserByEmail'
 
-            if(user_id == id){ // si el user_id (del e-mail de la bbdd) coincide con el id (params del usuario actual), sí procede la actualización
+            if(user_id == id){ // si el 'user_id' (de la bbdd –modelGetUserByEmail–) coincide con el 'id' (params del usuario actual), el usuario se actualiza
 
                 await modelUpdateUser(data);
 
@@ -172,15 +172,14 @@ const updateUser = async (req, res) => {
 
                 return res.status(400).json({
                     ok: false,
-                    msg: `ERROR: no se han actualizado los datos. El e-mail "${email}" ya existe en la base de datos.`
+                    msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
                 });
 
             };
 
         };
 
-
-    } catch (error) {
+    }catch (error){
 
         console.log(error);
 

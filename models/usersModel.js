@@ -135,8 +135,6 @@ const modelUpdateUser = async (data) => {
 
     };
 
-    console.log(result);
-
     return result;
 
 }; //!FUNC-MODELUPDATEUSER
