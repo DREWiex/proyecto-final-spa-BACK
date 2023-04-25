@@ -1,1 +1,3 @@
-# proyecto-final-spa-BACK
+# Proyecto final SPA
+# Study Rooms
+## Desarrollador: Andrés León
