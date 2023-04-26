@@ -34,7 +34,7 @@ CREATE TABLE users (
 INSERT INTO roles(role_name)
 VALUES
 ('admin'),
-('users');
+('user');
 
 -- Crear usuario con role 'admin' --
 INSERT INTO users(first_name, last_name, email, password, avatar, role_id)

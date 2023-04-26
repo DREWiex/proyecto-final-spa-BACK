@@ -24,7 +24,7 @@ const getUsers = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                users: rows
+                data: rows
             });
 
         };
@@ -63,7 +63,7 @@ const getUserByEmail = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                user: rows
+                data: rows
             });
 
         };
@@ -110,7 +110,7 @@ const addUser = async (req, res) => {
             res.status(201).json({
                 ok: true,
                 msg: 'El usuario se ha registrado con éxito.',
-                user: data
+                data
             });
 
         };
@@ -152,7 +152,7 @@ const updateUser = async (req, res) => {
             return res.status(200).json({
                 ok: true,
                 msg: 'Usuario actualizado con éxito',
-                user: data
+                data
             });
 
         };
@@ -168,7 +168,7 @@ const updateUser = async (req, res) => {
                 return res.status(200).json({
                     ok: true,
                     msg: 'Usuario actualizado con éxito',
-                    user: data
+                    data
                 });
 
             } else {

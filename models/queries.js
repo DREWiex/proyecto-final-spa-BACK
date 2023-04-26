@@ -1,11 +1,13 @@
 const users={
     queryGetUsers:`
-    SELECT *
-    FROM users
+    SELECT u.user_id, roles.role, u.first_name, u.last_name, u.email, u.password, u.avatar, u.register_date
+    FROM users AS u
+    INNER JOIN roles ON u.role_id=roles.role_id
     ORDER BY user_id DESC`,
     queryGetUserByEmail:`
-    SELECT *
-    FROM users
+    SELECT u.user_id, roles.role, u.first_name, u.last_name, u.email, u.password, u.avatar, u.register_date
+    FROM users AS u
+    INNER JOIN roles ON u.role_id=roles.role_id
     WHERE email=$1`,
     queryAddUser:`
     INSERT INTO users (role_id, first_name, last_name, email, password, avatar)
