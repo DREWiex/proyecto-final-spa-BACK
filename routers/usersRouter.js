@@ -1,21 +1,29 @@
 const { Router } = require('express');
 const router = Router();
 
+const {
+    getUsers,
+    getUserByEmail,
+    addUser,
+    updateUser,
+    deleteUser
+} = require('../controllers/usersController');
+
 
 // GET ALL USERS - obtener todos los usuarios en el dashboard del admin
-router.get('/');
+router.get('/', getUsers);
 
 // GET USER BY ID - obtener un usuario según su email
-router.get('/:email');
+router.get('/:email', getUserByEmail);
 
 // ADD USER - crear un nuevo usuario (form register / dashboard admin)
-router.post('/');
+router.post('/', addUser);
 
-// UPDATE USER - editar un usuario según su e-mail (front: mi perfil / dashboard admin)
-router.put('/:email');
+// UPDATE USER - editar un usuario según su id (front: mi perfil / dashboard admin)
+router.put('/:id', updateUser);
 
-//DELETE USER - eliminar un usuario según su e-mail (front: mi perfil / dashboard admin)
-router.delete('/:email');
+//DELETE USER - eliminar un usuario según su id (front: mi perfil / dashboard admin)
+router.delete('/:id', deleteUser);
 
 
 module.exports = router;

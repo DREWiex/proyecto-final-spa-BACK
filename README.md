@@ -1,1 +1,2 @@
-# proyecto-final-spa-BACK
+# Proyecto final SPA - Studyverse
+## Desarrollador: Andrés León
