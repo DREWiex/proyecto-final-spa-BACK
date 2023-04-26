@@ -65,11 +65,12 @@ const modelAddUser = async (data) => {
     let client, result;
 
     const {
+        role_id,
         first_name,
         last_name,
         email,
         password,
-        avatar
+        avatar,
     } = data;
 
     try {
@@ -77,6 +78,7 @@ const modelAddUser = async (data) => {
         client = await pool.connect();
 
         result = await client.query(users.queryAddUser, [
+            role_id,
             first_name,
             last_name,
             email,

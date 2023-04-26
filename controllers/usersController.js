@@ -85,7 +85,10 @@ const getUserByEmail = async (req, res) => {
 
 const addUser = async (req, res) => {
 
-    const data = req.body; // data recibe el objeto body del formulario de registro
+    const data = {
+        role_id: 2, // el valor por defecto será 2 ('user') (1 = 'admin')
+        ...req.body // recibe el objeto body del form de registro y del dashboard del admin
+    };
 
     const { email } = req.body; // destructuración de la propiedad 'email' del objeto req.body
 
