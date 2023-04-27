@@ -30,8 +30,25 @@ CREATE TABLE users (
             REFERENCES roles(role_id)
 );
 
+-- Crear tabla: rooms --
+CREATE TABLE rooms (
+    room_id serial PRIMARY KEY,
+    user_id int,
+    role_id int,
+    room varchar(255) NOT NULL,
+    description varchar(2000) NOT NULL,
+    photo varchar(255) NOT NULL,
+    creation_date date DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT FK_users
+        FOREIGN KEY (user_id)
+            REFERENCES users(user_id),
+    CONSTRAINT FK_roles
+        FOREIGN KEY (role_id)
+            REFERENCES roles(role_id)
+);
+
 -- Crear roles en tabla roles
-INSERT INTO roles(role_name)
+INSERT INTO roles(role)
 VALUES
 ('admin'),
 ('user');
@@ -49,3 +66,9 @@ VALUES
 ('Esther', 'Roncalla', 'esther@correo.com','123456', 'url_avatar', 2),
 ('Kevin', 'Escobar', 'kevin@correo.com','123456', 'url_avatar', 2),
 ('Jorge', 'Juan', 'jorge@correo.com','123456', 'url_avatar', 2);
+
+-- Crear salas de estudio con role 'admin' --
+INSERT INTO rooms(user_id, role_id, room, description, photo)
+VALUES
+(1, 1, 'Sala de estudio 1', 'Descripción de la sala de estudio 1', 'url_prueba'),
+(1, 1, 'Sala de estudio 2', 'Descripción de la sala de estudio 2', 'url_prueba');
