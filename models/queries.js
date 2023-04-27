@@ -46,7 +46,10 @@ const rooms = {
     queryUpdateRoom:`
     UPDATE rooms
     SET room=$1, description=$2, photo=$3
-    WHERE room_id=$4`
+    WHERE room_id=$4`,
+    queryDeleteRoom:`
+    DELETE FROM rooms
+    WHERE room_id=$1`
 }; //ROOMS
 
 

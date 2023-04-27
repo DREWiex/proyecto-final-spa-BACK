@@ -142,9 +142,35 @@ const modelUpdateRoom = async (data) => {
 }; //!FUNC-MODELUPDATEROOM
 
 
+const modelDeleteRoom = async (id) => {
+
+    let client, result;
+
+    try {
+        
+        client = await pool.connect();
+
+        result = await client.query(rooms.queryDeleteRoom, [ id ]);
+
+    } catch (error) {
+        
+        throw error;
+
+    } finally {
+
+        client.release();
+
+    };
+
+    return result;
+
+}; //!FUNC-MODELDELETEROOM
+
+
 module.exports = {
     modelGetRooms,
     modelGetRoomByID,
     modelAddRoom,
-    modelUpdateRoom
+    modelUpdateRoom,
+    modelDeleteRoom
 };
