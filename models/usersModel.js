@@ -35,7 +35,7 @@ const modelGetUsers = async () => {
 }; //!FUNC-MODELGETUSERS
 
 
-const modelGetUserByEmail = async (email) => {
+const modelGetUserByID = async (id) => {
 
     let client, result;
 
@@ -43,12 +43,12 @@ const modelGetUserByEmail = async (email) => {
         
         client = await pool.connect();
 
-        result = await client.query(users.queryGetUserByEmail, [ email ]);
+        result = client.query(users.queryGetUserByID, [ id ]);
 
     } catch (error) {
-
-        throw error;
         
+        throw error;
+
     } finally {
 
         client.release();
@@ -57,7 +57,7 @@ const modelGetUserByEmail = async (email) => {
 
     return result;
 
-}; //!FUNC-MODELGETUSERBYEMAIL
+}; //!FUNC-MODELGETUSERBYID
 
 
 const modelAddUser = async (data) => {
@@ -167,10 +167,36 @@ const modelDeleteUser = async (id) => {
 }; //!FUNC-MODELDELETEUSER
 
 
+const modelGetUserByEmail = async (email) => {
+
+    let client, result;
+
+    try {
+        
+        client = await pool.connect();
+
+        result = await client.query(users.queryGetUserByEmail, [ email ]);
+
+    } catch (error) {
+
+        throw error;
+        
+    } finally {
+
+        client.release();
+
+    };
+
+    return result;
+
+}; //!FUNC-MODELGETUSERBYEMAIL
+
+
 module.exports = {
     modelGetUsers,
-    modelGetUserByEmail,
+    modelGetUserByID,
     modelAddUser,
     modelUpdateUser,
-    modelDeleteUser
+    modelDeleteUser,
+    modelGetUserByEmail
 };

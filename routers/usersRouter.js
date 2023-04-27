@@ -3,7 +3,7 @@ const router = Router();
 
 const {
     getUsers,
-    getUserByEmail,
+    getUserByID,
     addUser,
     updateUser,
     deleteUser
@@ -14,7 +14,7 @@ const {
 router.get('/', getUsers);
 
 // GET USER BY ID - obtener un usuario según su email
-router.get('/:email', getUserByEmail);
+router.get('/:id', getUserByID);
 
 // ADD USER - crear un nuevo usuario (form register / dashboard admin)
 router.post('/', addUser);

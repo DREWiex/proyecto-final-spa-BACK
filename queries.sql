@@ -12,7 +12,7 @@ CREATE DATABASE studyverse
 -- Crear tabla: roles --
 CREATE TABLE roles (
     role_id serial PRIMARY KEY,
-    role_name varchar(20) NOT NULL
+    role varchar(20) NOT NULL
 );
 
 -- Crear tabla: users --
