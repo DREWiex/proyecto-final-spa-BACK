@@ -6,7 +6,13 @@ const {
     modelDeleteRoom
 } = require('../models/roomsModel');
 
-
+/**
+ * Obtener todas las salas de estudio de la base de datos.
+ * @function getRooms
+ * @async
+ * @param {Object} req Objeto de solicitud.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
+ */
 const getRooms = async (req, res) => {
 
     try {
@@ -54,7 +60,13 @@ const getRooms = async (req, res) => {
 
 }; //!FUNC-GETROOMS
 
-
+/**
+ * Obtener por ID una sala de estudio de la base de datos.
+ * @function getRoomByID
+ * @async
+ * @param {Object} req Objeto de solicitud: recibe 'params'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
+ */
 const getRoomByID = async (req, res) => {
 
     const { id } = req.params; // destructuración del 'id' de la sala estudio ('room_id') recibido en el objeto req.params
@@ -104,7 +116,13 @@ const getRoomByID = async (req, res) => {
 
 }; //!FUNC-GETROOMBYID
 
-
+/**
+ * Crear una sala de estudio en la base de datos.
+ * @function addRoom
+ * @async
+ * @param {Object} req Objeto de solicitud: recibe 'body'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
+ */
 const addRoom = async (req, res) => {
 
     /**
@@ -150,7 +168,13 @@ const addRoom = async (req, res) => {
 
 }; //!FUNC-ADDROOM
 
-
+/**
+ * Actualizar/editar por ID una sala de estudio en la base de datos.
+ * @function updateRoom
+ * @async
+ * @param {Object} req Objeto de solicitud: recibe 'params' y 'body'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
+ */
 const updateRoom = async (req, res) => {
 
     const { id } = req.params; // destructuración del 'id' de la sala estudio ('room_id') recibido en el objeto req.params
@@ -211,7 +235,13 @@ const updateRoom = async (req, res) => {
 
 }; //!FUNC-UPDATEROOM
 
-
+/**
+ * Eliminar por ID una sala de estudio de la base de datos.
+ * @function deleteRoom
+ * @async
+ * @param {Object} req Objeto de solicitud: recibe 'params'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
+ */
 const deleteRoom = async (req, res) => {
 
     const { id } = req.params; // destructuración del 'id' de la sala estudio ('room_id') recibido en el objeto req.params

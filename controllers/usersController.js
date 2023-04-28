@@ -8,11 +8,11 @@ const {
 } = require('../models/usersModel');
 
 /**
- * Obtiene todos los usuarios registrados en la bbdd
+ * Obtener todos los usuarios de la base de datos.
  * @function getUsers
  * @async
- * @param {Object} req Objeto de solicitud
- * @param {Object} res Objeto de respuesta
+ * @param {Object} req Objeto de solicitud.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
 const getUsers = async (req, res) => {
 
@@ -51,11 +51,11 @@ const getUsers = async (req, res) => {
 }; //!FUNC-GETUSERS
 
 /**
- * Obtiene por id un usuario registrado en la bbdd
+ * Obtener por ID un usuario de la base de datos
  * @function getUserByID
  * @async
- * @param {Object} req Objeto de solicitud
- * @param {Object} res Objeto de respuesta
+ * @param {Object} req Objeto de solicitud: recibe 'params'
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'
  */
 const getUserByID = async (req, res) => {
 
@@ -96,7 +96,7 @@ const getUserByID = async (req, res) => {
 }; //!FUNC-GETUSERBYEMAIL
 
 /**
- * Crea un nuevo usuario en la bbdd
+ * Crear un nuevo usuario en la bbdd
  * @function addUser
  * @async
  * @param {Object} req Objeto de solicitud
