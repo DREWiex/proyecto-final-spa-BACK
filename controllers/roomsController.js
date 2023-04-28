@@ -185,7 +185,7 @@ const updateRoom = async (req, res) => {
 
     const data = {
         room_id: id, // renombro la propiedad para que coincida con el model
-        ...req.body // spread de todas las propiedades que recibe el objeto req.body del form (dashboard del admin)
+        ...req.body // spread de todas las propiedades que recibe el objeto 'req.body' del form desde el dashboard del admin
     };
 
     try {

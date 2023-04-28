@@ -135,7 +135,7 @@ const addUser = async (req, res) => {
         ...req.body // recibe el objeto body del form de registro o del dashboard del admin
     };
 
-    const { email } = req.body; // destructuración de la propiedad 'email' del objeto req.body
+    const { email } = req.body; // destructuración de la propiedad 'email' del objeto 'req.body'
 
     try{
 
@@ -186,63 +186,89 @@ const addUser = async (req, res) => {
 }; //!FUNC-ADDUSER
 
 /**
- * Editar/actualizar un usuario ya existente en la bbdd
+ * Actualizar/editar por ID un usuario en la base de datos.
  * @function updateUser
  * @async
- * @param {Object} req Objeto de solicitud
- * @param {Object} res Objeto de respuesta
+ * @param {Object} req Objeto de solicitud: recibe 'params' y 'body'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
 const updateUser = async (req, res) => {
 
-    const { id } = req.params; // destructuración de la propiedad 'id' (user_id) del objeto req.params
+    const { id } = req.params; // destructuración del 'id' del usuario ('user_id') recibido en el objeto 'req.params'
 
-    const { email } = req.body; // destructuración de la propiedad 'email' del objeto req.body
+    const { email } = req.body; // destructuración de la propiedad 'email' del objeto 'req.body'
 
     const data = {
-        user_id: id, // renombro la propiedad para que coincida con el modelo
-        ...req.body // spread de todas las propiedades que recibe el objeto req.body del form (mi perfil –usuario– y dashboard –admin–)
+        user_id: id, // renombro la propiedad para que coincida con el model
+        ...req.body // spread de todas las propiedades que recibe el objeto 'req.body' del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin
     };
 
     try{
 
-        const { rowCount, rows } = await modelGetUserByEmail(email);
+        const { result } = await modelGetUserByEmail(email); // destructuración de la propiedad 'result' del objeto que devuelve el model
 
-        if(rowCount == 0){ // condicional: si el e-mail no existe, el usuario se actualiza
+        const { rowCount, rows } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
 
-            await modelUpdateUser(data);
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el e-mail no existe en la base de datos
 
-            return res.status(200).json({
-                ok: true,
-                msg: 'Usuario actualizado con éxito',
-                data
-            });
+            const { ok } = await modelUpdateUser(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-        };
+            if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
 
-        if(rowCount == 1){ // condicional: si el e-mail existe, se pueden dar dos casos:
-
-            const [{ user_id }] = rows; // destructuración de la propiedad 'user_id' del array de objetos de la propiedad 'rows' que devuelve el objeto JSON de la respuesta del 'modelGetUserByEmail'
-
-            if(user_id == id){ // si el 'user_id' (obtenido de la bbdd  por consulta en el modelGetUserByEmail) coincide con el 'id' (params del usuario actual), el usuario se actualiza
-
-                await modelUpdateUser(data);
-
-                return res.status(200).json({
-                    ok: true,
-                    msg: 'Usuario actualizado con éxito',
-                    data
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'ERROR: no se guardaron los cambios realizados.'
                 });
 
             } else {
 
-                return res.status(400).json({
+                return res.status(200).json({
+                    ok: true,
+                    msg: 'Usuario actualizado con éxito',
+                    data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+                });
+
+            };
+
+        }; //! FIRST-IF-END
+
+
+        if(rowCount == 1){ // condicional: si 'rowCount' es igual a 1, el e-mail existe en la base de datos y se pueden dar dos casos:
+
+            const [ { user_id } ] = rows; // destructuración de la propiedad 'user_id' del array de objetos de la propiedad 'rows' que devuelve el objeto de la respuesta del 'modelGetUserByEmail'
+
+            if(user_id == id){ // si 'user_id' (recibido en 'modelGetUserByEmail') coincide con el 'id' (recibido por params –usuario actual–), el usuario se actualiza porque el e-mail está guardado en la base de datos con su 'user_id'
+
+                const { ok } = await modelUpdateUser(data);  // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+                if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+
+                    return res.status(400).json({
+                        ok: false,
+                        msg: 'ERROR: no se guardaron los cambios realizados.'
+                    });
+
+                } else {
+
+                    return res.status(200).json({
+                        ok: true,
+                        msg: 'Usuario actualizado con éxito',
+                        data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+                    });
+
+                };
+
+            } else { // el e-mail está registrado con un 'user_id' distinto al del usuario actual
+
+                res.status(400).json({
                     ok: false,
                     msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
                 });
 
             };
 
-        };
+        }; //! SECOND-IF-END
+        
 
     }catch (error){
 
