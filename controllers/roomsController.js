@@ -32,9 +32,9 @@ const getRooms = async (req, res) => {
 
         if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existen salas de estudio en la base de datos
 
-            res.status(400).json({
+            res.status(200).json({
                 ok: false,
-                msg: 'ERROR: no hay salas de estudio guardadas en la base de datos.'
+                msg: 'No hay salas de estudio guardadas en la base de datos.'
             });
 
         } else {

@@ -62,7 +62,7 @@ CREATE TABLE reservations (
     CONSTRAINT FK_rooms
         FOREIGN KEY (room_id)
             REFERENCES rooms(room_id)
-                ON DELETE CASCADE
+                ON DELETE CASCADE,
 );
 
 -- Crear roles en tabla roles
@@ -95,6 +95,7 @@ VALUES
 INSERT INTO reservations(user_id, room_id, reservation_date, schedule)
 VALUES
 (2, 1, '2023/07/16', '10:00'),
+(3, 1, '2023/07/16', '11:30'),
 (5, 1, '2023/06/28', '09:30'),
 (4, 2, '2023/06/19', '16:00'),
 (2, 2, '2023/09/07', '08:00'),

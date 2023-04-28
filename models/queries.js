@@ -53,7 +53,24 @@ const rooms = {
 }; //ROOMS
 
 
+const reservations = {
+    queryGetReservations:`
+    SELECT r.reservation_id, users.user_id, users.first_name, users.last_name, rooms.room, r.reservation_date, r.schedule, r.creation_date
+    FROM ((reservations AS r
+    INNER JOIN users ON r.user_id=users.user_id)
+    INNER JOIN rooms ON r.room_id=rooms.room_id)
+    ORDER BY reservation_date, schedule;`,
+    queryGetReservationByID:`
+    SELECT r.reservation_id, users.user_id, users.first_name, users.last_name, rooms.room, r.reservation_date, r.schedule, r.creation_date
+    FROM ((reservations AS r
+    INNER JOIN users ON r.user_id=users.user_id)
+    INNER JOIN rooms ON r.room_id=rooms.room_id)
+    WHERE reservation_id=$1`
+}; //RESERVATIONS
+
+
 module.exports = {
     users,
-    rooms
+    rooms,
+    reservations
 }
