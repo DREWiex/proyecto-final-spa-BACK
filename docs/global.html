@@ -104,7 +104,7 @@
     
 
     
-    <h4 class="name" id="addUser"><span class="type-signature">(async) </span>addUser<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="addRoom"><span class="type-signature">(async) </span>addRoom<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
     
 
     
@@ -112,7 +112,7 @@
 
 
 <div class="description">
-    Crea un nuevo usuario en la bbdd
+    Crear una sala de estudio en la base de datos.
 </div>
 
 
@@ -164,7 +164,7 @@
 
             
 
-            <td class="description last">Objeto de solicitud</td>
+            <td class="description last">Objeto de solicitud: recibe 'body'.</td>
         </tr>
 
     
@@ -187,7 +187,7 @@
 
             
 
-            <td class="description last">Objeto de respuesta</td>
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
         </tr>
 
     
@@ -228,7 +228,327 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="usersController.js.html">usersController.js</a>, <a href="usersController.js.html#line98">line 98</a>
+        <a href="roomsController.js.html">roomsController.js</a>, <a href="roomsController.js.html#line119">line 119</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addUser"><span class="type-signature">(async) </span>addUser<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Crear un usuario en la base de datos.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de solicitud: recibe 'body'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="usersController.js.html">usersController.js</a>, <a href="usersController.js.html#line120">line 120</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="deleteRoom"><span class="type-signature">(async) </span>deleteRoom<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Eliminar por ID una sala de estudio de la base de datos.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de solicitud: recibe 'params'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="roomsController.js.html">roomsController.js</a>, <a href="roomsController.js.html#line238">line 238</a>
     </li></ul></dd>
     
 
@@ -272,7 +592,7 @@
 
 
 <div class="description">
-    Elimina un usuario de la bbdd
+    Eliminar por ID un usuario de la base de datos
 </div>
 
 
@@ -324,7 +644,7 @@
 
             
 
-            <td class="description last">Objeto de solicitud</td>
+            <td class="description last">Objeto de solicitud: recibe 'params'.</td>
         </tr>
 
     
@@ -347,7 +667,7 @@
 
             
 
-            <td class="description last">Objeto de respuesta</td>
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
         </tr>
 
     
@@ -388,7 +708,327 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="usersController.js.html">usersController.js</a>, <a href="usersController.js.html#line228">line 228</a>
+        <a href="usersController.js.html">usersController.js</a>, <a href="usersController.js.html#line287">line 287</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getRoomByID"><span class="type-signature">(async) </span>getRoomByID<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Obtener por ID una sala de estudio de la base de datos.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de solicitud: recibe 'params'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="roomsController.js.html">roomsController.js</a>, <a href="roomsController.js.html#line63">line 63</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getRooms"><span class="type-signature">(async) </span>getRooms<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Obtener todas las salas de estudio de la base de datos.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de solicitud.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="roomsController.js.html">roomsController.js</a>, <a href="roomsController.js.html#line9">line 9</a>
     </li></ul></dd>
     
 
@@ -432,7 +1072,7 @@
 
 
 <div class="description">
-    Obtiene por id un usuario registrado en la bbdd
+    Obtener por ID un usuario de la base de datos.
 </div>
 
 
@@ -484,7 +1124,7 @@
 
             
 
-            <td class="description last">Objeto de solicitud</td>
+            <td class="description last">Objeto de solicitud: recibe 'params'.</td>
         </tr>
 
     
@@ -507,7 +1147,7 @@
 
             
 
-            <td class="description last">Objeto de respuesta</td>
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
         </tr>
 
     
@@ -548,7 +1188,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="usersController.js.html">usersController.js</a>, <a href="usersController.js.html#line53">line 53</a>
+        <a href="usersController.js.html">usersController.js</a>, <a href="usersController.js.html#line64">line 64</a>
     </li></ul></dd>
     
 
@@ -592,7 +1232,7 @@
 
 
 <div class="description">
-    Obtiene todos los usuarios registrados en la bbdd
+    Obtener todos los usuarios de la base de datos.
 </div>
 
 
@@ -644,7 +1284,7 @@
 
             
 
-            <td class="description last">Objeto de solicitud</td>
+            <td class="description last">Objeto de solicitud.</td>
         </tr>
 
     
@@ -667,7 +1307,7 @@
 
             
 
-            <td class="description last">Objeto de respuesta</td>
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
         </tr>
 
     
@@ -744,7 +1384,7 @@
     
 
     
-    <h4 class="name" id="updateUser"><span class="type-signature">(async) </span>updateUser<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="updateRoom"><span class="type-signature">(async) </span>updateRoom<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
     
 
     
@@ -752,7 +1392,7 @@
 
 
 <div class="description">
-    Editar/actualizar un usuario ya existente en la bbdd
+    Actualizar/editar por ID una sala de estudio en la base de datos.
 </div>
 
 
@@ -804,7 +1444,7 @@
 
             
 
-            <td class="description last">Objeto de solicitud</td>
+            <td class="description last">Objeto de solicitud: recibe 'params' y 'body'.</td>
         </tr>
 
     
@@ -827,7 +1467,7 @@
 
             
 
-            <td class="description last">Objeto de respuesta</td>
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
         </tr>
 
     
@@ -868,7 +1508,167 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="usersController.js.html">usersController.js</a>, <a href="usersController.js.html#line155">line 155</a>
+        <a href="roomsController.js.html">roomsController.js</a>, <a href="roomsController.js.html#line171">line 171</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updateUser"><span class="type-signature">(async) </span>updateUser<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Actualizar/editar por ID un usuario en la base de datos.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de solicitud: recibe 'params' y 'body'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Objeto de respuesta: devuelve 'status' y 'json'.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="usersController.js.html">usersController.js</a>, <a href="usersController.js.html#line188">line 188</a>
     </li></ul></dd>
     
 
@@ -914,13 +1714,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#getUserByID">getUserByID</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#updateUser">updateUser</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addRoom">addRoom</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#deleteRoom">deleteRoom</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#getRoomByID">getRoomByID</a></li><li><a href="global.html#getRooms">getRooms</a></li><li><a href="global.html#getUserByID">getUserByID</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#updateRoom">updateRoom</a></li><li><a href="global.html#updateUser">updateUser</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu Apr 27 2023 13:02:14 GMT+0200 (hora de verano de Europa central)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Apr 28 2023 12:32:19 GMT+0200 (hora de verano de Europa central)
 </footer>
 
 <script> prettyPrint(); </script>
