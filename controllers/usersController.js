@@ -72,7 +72,7 @@ const getUserByID = async (req, res) => {
 
     const { id } = req.params; // destructuración del 'id' del usuario ('user_id') recibido en el objeto req.params
 
-    try{
+    try {
 
         const { ok, result } = await modelGetUserByID(id); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
 
@@ -103,7 +103,7 @@ const getUserByID = async (req, res) => {
 
         };
 
-    }catch (error){
+    } catch (error) {
 
         console.log(error);
 
@@ -137,7 +137,7 @@ const addUser = async (req, res) => {
 
     const { email } = req.body; // destructuración de la propiedad 'email' del objeto 'req.body'
 
-    try{
+    try {
 
         const { result } = await modelGetUserByEmail(email); // destructuración de la propiedad 'result' del objeto que devuelve el model
 
@@ -171,7 +171,7 @@ const addUser = async (req, res) => {
 
         };
 
-    }catch (error){
+    } catch (error) {
 
         console.log(error);
 
@@ -203,7 +203,7 @@ const updateUser = async (req, res) => {
         ...req.body // spread de todas las propiedades que recibe el objeto 'req.body' del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin
     };
 
-    try{
+    try {
 
         const { result } = await modelGetUserByEmail(email); // destructuración de la propiedad 'result' del objeto que devuelve el model
 
@@ -268,9 +268,9 @@ const updateUser = async (req, res) => {
             };
 
         }; //! SECOND-IF-END
-        
 
-    }catch (error){
+
+    } catch (error) {
 
         console.log(error);
 
@@ -285,29 +285,38 @@ const updateUser = async (req, res) => {
 }; //!FUNC-UPDATEUSER
 
 /**
- * Elimina un usuario de la bbdd
+ * Eliminar por ID un usuario de la base de datos
  * @function deleteUser
  * @async
- * @param {Object} req Objeto de solicitud
- * @param {Object} res Objeto de respuesta
+ * @param {Object} req Objeto de solicitud: recibe 'params'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
 const deleteUser = async (req, res) => {
 
-    /**
-     * @type {String}
-     */
+    const { id } = req.params; // destructuración del 'id' del usuario ('user_id') recibido en el objeto 'req.params'
 
-    const id = req.params.id; // 'user_id' del usuario obtenido del objeto params
+    try {
 
-    try{
+        const { result } = await modelGetUserByID(id); // destructuración de la propiedad 'result' del objeto que devuelve el model
 
-        const { rowCount } = await modelDeleteUser(id);
+        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
 
-        if(rowCount == 0){ // condicional: si es igual a 0, el usuario no existe en la bbdd
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el usuario no existe en la base de datos
+
+            return res.status(400).json({
+                ok: false,
+                msg: `ERROR: el usuario con ID "${id}" no existe en la base de datos.`
+            });
+
+        };
+
+        const { ok } = await modelDeleteUser(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
 
             res.status(400).json({
                 ok: false,
-                msg: `ERROR: el usuario con ID "${id}" no existe en la base de datos.`
+                msg: `ERROR: no se ha podido eliminar el usuario con ID "${id}".`
             });
 
         } else {
@@ -315,12 +324,11 @@ const deleteUser = async (req, res) => {
             res.status(200).json({
                 ok: true,
                 msg: 'El usuario ha sido eliminado correctamente.'
-
             });
 
         };
 
-    }catch (error){
+    } catch (error) {
 
         console.log(error);
 

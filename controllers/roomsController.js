@@ -244,7 +244,7 @@ const updateRoom = async (req, res) => {
  */
 const deleteRoom = async (req, res) => {
 
-    const { id } = req.params; // destructuración del 'id' de la sala estudio ('room_id') recibido en el objeto req.params
+    const { id } = req.params; // destructuración del 'id' de la sala estudio ('room_id') recibido en el objeto 'req.params'
 
     try {
 
@@ -252,7 +252,7 @@ const deleteRoom = async (req, res) => {
 
         const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
 
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el 'id' (la sala de estudio) no existe en la bbdd
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el 'id' (la sala de estudio) no existe en la base de datos
 
             return res.status(400).json({
                 ok: false,

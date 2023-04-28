@@ -44,27 +44,38 @@
  */
 const getUsers = async (req, res) => {
 
-    try{
+    try {
 
-        const { rowCount, rows } = await modelGetUsers(); // rowCount (devuelve '0' o '1') y rows (devuelve un array de objetos con los datos de los usuarios) son propiedades del objeto JSON de la respuesta
+        const { ok, result } = await modelGetUsers(); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
 
-        if (rowCount == 0){
+        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+
+            return res.status(400).json({
+                ok: false,
+                msg: 'ERROR: no se han podido obtener resultados.'
+            });
+
+        };
+
+        const { rowCount, rows } = result; // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
+
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existen usuarios en la base de datos
 
             res.status(400).json({
                 ok: false,
                 msg: 'ERROR: no existen usuarios en la base de datos.'
             });
 
-        }else{
+        } else {
 
             res.status(200).json({
                 ok: true,
-                data: rows
+                data: rows  // devuelve un array de objetos con las propiedades del objeto que contiene los datos de los usuarios
             });
 
         };
 
-    }catch (error){
+    } catch (error) {
 
         console.log(error);
 
@@ -79,21 +90,32 @@ const getUsers = async (req, res) => {
 }; //!FUNC-GETUSERS
 
 /**
- * Obtener por ID un usuario de la base de datos
+ * Obtener por ID un usuario de la base de datos.
  * @function getUserByID
  * @async
- * @param {Object} req Objeto de solicitud: recibe 'params'
- * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'
+ * @param {Object} req Objeto de solicitud: recibe 'params'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
 const getUserByID = async (req, res) => {
 
-    const { id } = req.params; // params recibe el id del usuario
+    const { id } = req.params; // destructuración del 'id' del usuario ('user_id') recibido en el objeto req.params
 
-    try{
+    try {
 
-        const { rowCount, rows } = await modelGetUserByID(id);
+        const { ok, result } = await modelGetUserByID(id); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
 
-        if(rowCount == 0){
+        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+
+            return res.status(400).json({
+                ok: false,
+                msg: 'ERROR: no se han podido obtener resultados.'
+            });
+
+        };
+
+        const { rowCount, rows } = result; // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
+
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existe el usuario en la base de datos
 
             res.status(400).json({
                 ok: false,
@@ -104,12 +126,12 @@ const getUserByID = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                data: rows
+                data: rows // devuelve un array con el objeto que contiene los datos del usuario
             });
 
         };
 
-    }catch (error){
+    } catch (error) {
 
         console.log(error);
 
@@ -124,11 +146,11 @@ const getUserByID = async (req, res) => {
 }; //!FUNC-GETUSERBYEMAIL
 
 /**
- * Crear un nuevo usuario en la bbdd
+ * Crear un usuario en la base de datos.
  * @function addUser
  * @async
- * @param {Object} req Objeto de solicitud
- * @param {Object} res Objeto de respuesta
+ * @param {Object} req Objeto de solicitud: recibe 'body'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
 const addUser = async (req, res) => {
 
@@ -138,35 +160,46 @@ const addUser = async (req, res) => {
 
     const data = {
         role_id: 2, // el valor por defecto será 2 ('user') (1 = 'admin')
-        ...req.body // recibe el objeto body del form de registro y del dashboard del admin
+        ...req.body // recibe el objeto body del form de registro o del dashboard del admin
     };
 
-    const { email } = req.body; // destructuración de la propiedad 'email' del objeto req.body
+    const { email } = req.body; // destructuración de la propiedad 'email' del objeto 'req.body'
 
-    try{
+    try {
 
-        const { rowCount } = await modelGetUserByEmail(email); // consulto en la bbdd si ya existe o no un usuario registrado con ese e-mail
+        const { result } = await modelGetUserByEmail(email); // destructuración de la propiedad 'result' del objeto que devuelve el model
 
-        if (rowCount == 1) { // condicional: si rowCount es igual a 1, sí existe
+        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
 
-            res.status(400).json({
+        if (rowCount == 1) { // condicional: si rowCount es igual a 1, el e-mail ya existe
+
+            return res.status(400).json({
                 ok: false,
                 msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
             });
 
-        } else {
+        };
 
-            await modelAddUser(data); // si no existe el e-mail en la bbdd, se crea el usuario
+        const { ok } = await modelAddUser(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+        if(!ok){
+
+            res.status(400).json({
+                ok: false,
+                msg: 'ERROR: no se ha registrado el usuario.'
+            });
+
+        } else {
 
             res.status(201).json({
                 ok: true,
                 msg: 'El usuario se ha registrado con éxito.',
-                data
+                data // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
             });
 
         };
 
-    }catch (error){
+    } catch (error) {
 
         console.log(error);
 
@@ -181,65 +214,91 @@ const addUser = async (req, res) => {
 }; //!FUNC-ADDUSER
 
 /**
- * Editar/actualizar un usuario ya existente en la bbdd
+ * Actualizar/editar por ID un usuario en la base de datos.
  * @function updateUser
  * @async
- * @param {Object} req Objeto de solicitud
- * @param {Object} res Objeto de respuesta
+ * @param {Object} req Objeto de solicitud: recibe 'params' y 'body'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
 const updateUser = async (req, res) => {
 
-    const { id } = req.params; // destructuración de la propiedad 'id' (user_id) del objeto req.params
+    const { id } = req.params; // destructuración del 'id' del usuario ('user_id') recibido en el objeto 'req.params'
 
-    const { email } = req.body; // destructuración de la propiedad 'email' del objeto req.body
+    const { email } = req.body; // destructuración de la propiedad 'email' del objeto 'req.body'
 
     const data = {
-        user_id: id, // renombro la propiedad para que coincida con el modelo
-        ...req.body // spread de todas las propiedades que recibe el objeto req.body del form (mi perfil –usuario– y dashboard –admin–)
+        user_id: id, // renombro la propiedad para que coincida con el model
+        ...req.body // spread de todas las propiedades que recibe el objeto 'req.body' del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin
     };
 
-    try{
+    try {
 
-        const { rowCount, rows } = await modelGetUserByEmail(email);
+        const { result } = await modelGetUserByEmail(email); // destructuración de la propiedad 'result' del objeto que devuelve el model
 
-        if(rowCount == 0){ // condicional: si el e-mail no existe, el usuario se actualiza
+        const { rowCount, rows } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
 
-            await modelUpdateUser(data);
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el e-mail no existe en la base de datos
 
-            return res.status(200).json({
-                ok: true,
-                msg: 'Usuario actualizado con éxito',
-                data
-            });
+            const { ok } = await modelUpdateUser(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-        };
+            if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
 
-        if(rowCount == 1){ // condicional: si el e-mail existe, se pueden dar dos casos:
-
-            const [{ user_id }] = rows; // destructuración de la propiedad 'user_id' del array de objetos de la propiedad 'rows' que devuelve el objeto JSON de la respuesta del 'modelGetUserByEmail'
-
-            if(user_id == id){ // si el 'user_id' (obtenido de la bbdd  por consulta en el modelGetUserByEmail) coincide con el 'id' (params del usuario actual), el usuario se actualiza
-
-                await modelUpdateUser(data);
-
-                return res.status(200).json({
-                    ok: true,
-                    msg: 'Usuario actualizado con éxito',
-                    data
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'ERROR: no se guardaron los cambios realizados.'
                 });
 
             } else {
 
-                return res.status(400).json({
+                return res.status(200).json({
+                    ok: true,
+                    msg: 'Usuario actualizado con éxito',
+                    data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+                });
+
+            };
+
+        }; //! FIRST-IF-END
+
+
+        if(rowCount == 1){ // condicional: si 'rowCount' es igual a 1, el e-mail existe en la base de datos y se pueden dar dos casos:
+
+            const [ { user_id } ] = rows; // destructuración de la propiedad 'user_id' del array de objetos de la propiedad 'rows' que devuelve el objeto de la respuesta del 'modelGetUserByEmail'
+
+            if(user_id == id){ // si 'user_id' (recibido en 'modelGetUserByEmail') coincide con el 'id' (recibido por params –usuario actual–), el usuario se actualiza porque el e-mail está guardado en la base de datos con su 'user_id'
+
+                const { ok } = await modelUpdateUser(data);  // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+                if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+
+                    return res.status(400).json({
+                        ok: false,
+                        msg: 'ERROR: no se guardaron los cambios realizados.'
+                    });
+
+                } else {
+
+                    return res.status(200).json({
+                        ok: true,
+                        msg: 'Usuario actualizado con éxito',
+                        data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+                    });
+
+                };
+
+            } else { // el e-mail está registrado con un 'user_id' distinto al del usuario actual
+
+                res.status(400).json({
                     ok: false,
                     msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
                 });
 
             };
 
-        };
+        }; //! SECOND-IF-END
 
-    }catch (error){
+
+    } catch (error) {
 
         console.log(error);
 
@@ -254,29 +313,38 @@ const updateUser = async (req, res) => {
 }; //!FUNC-UPDATEUSER
 
 /**
- * Elimina un usuario de la bbdd
+ * Eliminar por ID un usuario de la base de datos
  * @function deleteUser
  * @async
- * @param {Object} req Objeto de solicitud
- * @param {Object} res Objeto de respuesta
+ * @param {Object} req Objeto de solicitud: recibe 'params'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
 const deleteUser = async (req, res) => {
 
-    /**
-     * @type {String}
-     */
+    const { id } = req.params; // destructuración del 'id' del usuario ('user_id') recibido en el objeto 'req.params'
 
-    const id = req.params.id; // 'user_id' del usuario obtenido del objeto params
+    try {
 
-    try{
+        const { result } = await modelGetUserByID(id); // destructuración de la propiedad 'result' del objeto que devuelve el model
 
-        const { rowCount } = await modelDeleteUser(id);
+        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
 
-        if(rowCount == 0){ // condicional: si es igual a 0, el usuario no existe en la bbdd
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el usuario no existe en la base de datos
+
+            return res.status(400).json({
+                ok: false,
+                msg: `ERROR: el usuario con ID "${id}" no existe en la base de datos.`
+            });
+
+        };
+
+        const { ok } = await modelDeleteUser(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
 
             res.status(400).json({
                 ok: false,
-                msg: `ERROR: el usuario con ID "${id}" no existe en la base de datos.`
+                msg: `ERROR: no se ha podido eliminar el usuario con ID "${id}".`
             });
 
         } else {
@@ -284,12 +352,11 @@ const deleteUser = async (req, res) => {
             res.status(200).json({
                 ok: true,
                 msg: 'El usuario ha sido eliminado correctamente.'
-
             });
 
         };
 
-    }catch (error){
+    } catch (error) {
 
         console.log(error);
 
@@ -326,7 +393,7 @@ module.exports = {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Apr 28 2023 11:20:44 GMT+0200 (hora de verano de Europa central)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Apr 28 2023 12:32:19 GMT+0200 (hora de verano de Europa central)
 </footer>
 
 <script> prettyPrint(); </script>
