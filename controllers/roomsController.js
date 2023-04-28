@@ -131,7 +131,7 @@ const addRoom = async (req, res) => {
 
     const data = {
         role_id: 1, // el valor por defecto será 1 ('admin'), ya que solo el admin podrá crear salas de estudio nuevas 
-        ...req.body // recibo el 'user_id' del input hidden del form
+        ...req.body // recibe el objeto body del form del dashboard admin (recibe 'user_id' del input hidden del form)
     };
 
     try {

@@ -49,7 +49,7 @@ const modelGetUserByID = async (id) => {
         
         client = await pool.connect();
 
-        result = client.query(users.queryGetUserByID, [ id ]);
+        result = await client.query(users.queryGetUserByID, [ id ]);
 
     } catch (error) {
         

@@ -62,21 +62,32 @@ const getUsers = async (req, res) => {
 }; //!FUNC-GETUSERS
 
 /**
- * Obtener por ID un usuario de la base de datos
+ * Obtener por ID un usuario de la base de datos.
  * @function getUserByID
  * @async
- * @param {Object} req Objeto de solicitud: recibe 'params'
- * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'
+ * @param {Object} req Objeto de solicitud: recibe 'params'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
 const getUserByID = async (req, res) => {
 
-    const { id } = req.params; // params recibe el id del usuario
+    const { id } = req.params; // destructuración del 'id' del usuario ('user_id') recibido en el objeto req.params
 
     try{
 
-        const { rowCount, rows } = await modelGetUserByID(id);
+        const { ok, result } = await modelGetUserByID(id); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
 
-        if(rowCount == 0){
+        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+
+            return res.status(400).json({
+                ok: false,
+                msg: 'ERROR: no se han podido obtener resultados.'
+            });
+
+        };
+
+        const { rowCount, rows } = result; // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
+
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existe el usuario en la base de datos
 
             res.status(400).json({
                 ok: false,
@@ -87,7 +98,7 @@ const getUserByID = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                data: rows
+                data: rows // devuelve un array con el objeto que contiene los datos del usuario
             });
 
         };
@@ -107,11 +118,11 @@ const getUserByID = async (req, res) => {
 }; //!FUNC-GETUSERBYEMAIL
 
 /**
- * Crear un nuevo usuario en la bbdd
+ * Crear un usuario en la base de datos.
  * @function addUser
  * @async
- * @param {Object} req Objeto de solicitud
- * @param {Object} res Objeto de respuesta
+ * @param {Object} req Objeto de solicitud: recibe 'body'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
 const addUser = async (req, res) => {
 
@@ -121,30 +132,41 @@ const addUser = async (req, res) => {
 
     const data = {
         role_id: 2, // el valor por defecto será 2 ('user') (1 = 'admin')
-        ...req.body // recibe el objeto body del form de registro y del dashboard del admin
+        ...req.body // recibe el objeto body del form de registro o del dashboard del admin
     };
 
     const { email } = req.body; // destructuración de la propiedad 'email' del objeto req.body
 
     try{
 
-        const { rowCount } = await modelGetUserByEmail(email); // consulto en la bbdd si ya existe o no un usuario registrado con ese e-mail
+        const { result } = await modelGetUserByEmail(email); // destructuración de la propiedad 'result' del objeto que devuelve el model
 
-        if (rowCount == 1) { // condicional: si rowCount es igual a 1, sí existe
+        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
 
-            res.status(400).json({
+        if (rowCount == 1) { // condicional: si rowCount es igual a 1, el e-mail ya existe
+
+            return res.status(400).json({
                 ok: false,
                 msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
             });
 
-        } else {
+        };
 
-            await modelAddUser(data); // si no existe el e-mail en la bbdd, se crea el usuario
+        const { ok } = await modelAddUser(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+        if(!ok){
+
+            res.status(400).json({
+                ok: false,
+                msg: 'ERROR: no se ha registrado el usuario.'
+            });
+
+        } else {
 
             res.status(201).json({
                 ok: true,
                 msg: 'El usuario se ha registrado con éxito.',
-                data
+                data // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
             });
 
         };
