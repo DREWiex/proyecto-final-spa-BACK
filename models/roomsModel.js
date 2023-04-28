@@ -22,7 +22,10 @@ const modelGetRooms = async () => {
 
     } catch (error) {
         
-        throw error;
+        throw {
+            ok: false,
+            error
+        };
 
     } finally {
 
@@ -30,7 +33,10 @@ const modelGetRooms = async () => {
 
     };
 
-    return result;
+    return {
+        ok: true,
+        result
+    };
 
 }; //!FUNC-MODELGETROOMS
 
@@ -47,7 +53,10 @@ const modelGetRoomByID = async (id) => {
 
     } catch (error) {
         
-        throw error;
+        throw {
+            ok: false,
+            error
+        };
 
     } finally {
 
@@ -55,7 +64,10 @@ const modelGetRoomByID = async (id) => {
 
     };
 
-    return result;
+    return {
+        ok: true,
+        result
+    };
 
 }; //!FUNC-MODELGETROOMBYID
 
@@ -86,7 +98,10 @@ const modelAddRoom = async (data) => {
 
     } catch (error) {
         
-        throw error;
+        throw {
+            ok: false,
+            error
+        };
 
     } finally {
 
@@ -126,7 +141,10 @@ const modelUpdateRoom = async (data) => {
 
     } catch (error) {
         
-        throw error;
+        throw {
+            ok: false,
+            error
+        };
 
     } finally {
 
@@ -154,7 +172,10 @@ const modelDeleteRoom = async (id) => {
 
     } catch (error) {
         
-        throw error;
+        throw {
+            ok: false,
+            error
+        };
 
     } finally {
 
@@ -162,7 +183,10 @@ const modelDeleteRoom = async (id) => {
 
     };
 
-    return result;
+    return{
+        ok: true,
+        result
+    };
 
 }; //!FUNC-MODELDELETEROOM
 
