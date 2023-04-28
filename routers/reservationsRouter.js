@@ -3,7 +3,6 @@ const router = Router();
 
 const {
     getReservations,
-    getUserReservations,
     getReservationByID,
     addReservation,
     updateReservation,
@@ -13,9 +12,6 @@ const {
 
 // GET ALL RESERVATIONS - obtener todas las reservas
 router.get('/', getReservations);
-
-// GET ALL RESERVATIONS BY USER ID - obtener todas las reservas de un usuario
-router.get('/user/:user_id', getUserReservations);
 
 // GET RESERVATION BY ID - obtener una reserva por id (vista detalle)
 router.get('/:id', getReservationByID);

@@ -8,13 +8,6 @@ const getReservations = async (req, res) => {
 }; //!FUNC-GETRESERVATIONS
 
 
-const getUserReservations = async (req, res) => {
-
-    res.send('Capturando la ruta de getUserReservations.');
-
-}; //!FUNC-GETUSERRESERVATIONS
-
-
 const getReservationByID = async (req, res) => {
 
     res.send('Capturando la ruta de getReservationByID.');
@@ -45,7 +38,6 @@ const deleteReservation = async (req, res) => {
 
 module.exports = {
     getReservations,
-    getUserReservations,
     getReservationByID,
     addReservation,
     updateReservation,
