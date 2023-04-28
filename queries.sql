@@ -53,7 +53,8 @@ CREATE TABLE reservations (
     user_id int,
     room_id int,
     reservation_date date NOT NULL,
-    schedule time NOT NULL,
+    start_time time NOT NULL,
+	end_time time NOT NULL,
     creation_date date DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT FK_users
         FOREIGN KEY (user_id)
@@ -62,7 +63,7 @@ CREATE TABLE reservations (
     CONSTRAINT FK_rooms
         FOREIGN KEY (room_id)
             REFERENCES rooms(room_id)
-                ON DELETE CASCADE,
+                ON DELETE CASCADE
 );
 
 -- Crear roles en tabla roles
@@ -92,12 +93,12 @@ VALUES
 (1, 1, 'Sala de estudio 2', 'Descripción de la sala de estudio 2', 'url_prueba');
 
 -- Crear reservas de salas de estudio --
-INSERT INTO reservations(user_id, room_id, reservation_date, schedule)
+INSERT INTO reservations(user_id, room_id, reservation_date, start_time, end_time)
 VALUES
-(2, 1, '2023/07/16', '10:00'),
-(3, 1, '2023/07/16', '11:30'),
-(5, 1, '2023/06/28', '09:30'),
-(4, 2, '2023/06/19', '16:00'),
-(2, 2, '2023/09/07', '08:00'),
-(6, 1, '2023/08/10', '12:30'),
-(5, 1, '2023/11/05', '15:00');
+(2, 1, '2023/07/16', '10:00', '11:00'),
+(3, 1, '2023/07/16', '11:30', '13:00'),
+(5, 1, '2023/06/28', '09:30', '10:30'),
+(4, 2, '2023/06/19', '16:00', '19:00'),
+(2, 2, '2023/09/07', '08:00', '09:00'),
+(6, 1, '2023/08/10', '12:30', '14:00'),
+(5, 1, '2023/11/05', '15:00', '16:30');

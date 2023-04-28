@@ -154,7 +154,7 @@ const addUser = async (req, res) => {
 
         const { ok } = await modelAddUser(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-        if(!ok){
+        if(!ok){  /// condicional: si 'ok' es false, es por un error y entra en el catch del model
 
             res.status(400).json({
                 ok: false,

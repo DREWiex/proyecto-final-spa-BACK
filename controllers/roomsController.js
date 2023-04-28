@@ -136,7 +136,7 @@ const addRoom = async (req, res) => {
 
     try {
         
-        const { ok } = await modelAddRoom(data); // destructuración de la propiedad 'ok' del objeto que devuelve el modelo
+        const { ok } = await modelAddRoom(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
         if(!ok){ /// condicional: si 'ok' es false, es por un error y entra en el catch del model
 

@@ -72,7 +72,85 @@ const modelGetReservationByID = async (id) => {
 }; //!FUNC-MODELGETRESERVATIONBYID
 
 
+const modelAddReservation = async (data) => {
+
+    let client, result;
+
+    const {
+        user_id,
+        room_id,
+        reservation_date,
+        start_time,
+        end_time
+    } = data;
+
+    try {
+        
+        client = await pool.connect();
+
+        result = await client.query(reservations.queryAddReservation, [
+            user_id,
+            room_id,
+            reservation_date,
+            start_time,
+            end_time
+        ]);
+
+    } catch (error) {
+        
+        throw {
+            ok: false,
+            error
+        };
+
+    } finally {
+
+        client.release();
+
+    };
+
+    return {
+        ok: true,
+        result
+    };
+
+}; //!FUNC-MODELADDRESERVATION
+
+
+const modelSearchReservations = async (id) => {
+
+    let client, result;
+
+    try {
+        
+        client = await pool.connect();
+
+        result = await client.query(reservations.querySearchReservations, [ id ]);
+
+    } catch (error) {
+        
+        throw {
+            ok: false,
+            error
+        };
+
+    } finally {
+
+        client.release();
+
+    };
+
+    return {
+        ok: true,
+        result
+    };
+
+};
+
+
 module.exports = {
     modelGetReservations,
-    modelGetReservationByID
+    modelGetReservationByID,
+    modelAddReservation,
+    modelSearchReservations
 };
