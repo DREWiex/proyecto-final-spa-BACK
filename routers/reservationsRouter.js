@@ -6,7 +6,8 @@ const {
     getReservationByID,
     addReservation,
     updateReservation,
-    deleteReservation
+    deleteReservation,
+    searchReservations
 } = require('../controllers/reservationsController');
 
 
@@ -24,6 +25,9 @@ router.put('/:id', updateReservation);
 
 // DELETE RESERVATION - eliminar una reserva por id (user y admin)
 router.delete('/:id', deleteReservation);
+
+// SEARCH RESERVATIONS - buscar reservas por room_id (paso previo antes de 'addReservation')
+router.get('/search/:id', searchReservations);
 
 
 module.exports = router;
