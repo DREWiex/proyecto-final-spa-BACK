@@ -22,16 +22,22 @@ const modelGetUsers = async () => {
         
     } catch (error) {
 
-        throw error;
-        
+        throw {
+            ok: false,
+            error
+        };
+
     } finally {
 
         client.release();
 
     };
 
-    return result;
-
+    return {
+        ok: true,
+        result
+    };
+    
 }; //!FUNC-MODELGETUSERS
 
 
@@ -47,7 +53,10 @@ const modelGetUserByID = async (id) => {
 
     } catch (error) {
         
-        throw error;
+        throw {
+            ok: false,
+            error
+        };
 
     } finally {
 
@@ -55,7 +64,10 @@ const modelGetUserByID = async (id) => {
 
     };
 
-    return result;
+    return {
+        ok: true,
+        result
+    };
 
 }; //!FUNC-MODELGETUSERBYID
 
@@ -88,7 +100,10 @@ const modelAddUser = async (data) => {
 
     } catch (error) {
         
-        throw error;
+        throw {
+            ok: false,
+            error
+        };
 
     } finally {
 
@@ -96,7 +111,10 @@ const modelAddUser = async (data) => {
 
     };
 
-    return result;
+    return {
+        ok: true,
+        result
+    };
 
 }; //!FUNC-MODELADDUSER
 
@@ -129,7 +147,10 @@ const modelUpdateUser = async (data) => {
 
     } catch (error) {
         
-        throw error;
+        throw {
+            ok: false,
+            error
+        };
 
     } finally {
 
@@ -137,7 +158,10 @@ const modelUpdateUser = async (data) => {
 
     };
 
-    return result;
+    return {
+        ok: true,
+        result
+    };
 
 }; //!FUNC-MODELUPDATEUSER
 
@@ -154,7 +178,10 @@ const modelDeleteUser = async (id) => {
 
     } catch (error) {
         
-        throw error;
+        throw {
+            ok: false,
+            error
+        };
 
     } finally {
 
@@ -162,7 +189,10 @@ const modelDeleteUser = async (id) => {
 
     };
 
-    return result;
+    return {
+        ok: true,
+        result
+    };
 
 }; //!FUNC-MODELDELETEUSER
 
@@ -179,15 +209,21 @@ const modelGetUserByEmail = async (email) => {
 
     } catch (error) {
 
-        throw error;
-        
+        throw {
+            ok: false,
+            error
+        };
+
     } finally {
 
         client.release();
 
     };
 
-    return result;
+    return {
+        ok: true,
+        result
+    };
 
 }; //!FUNC-MODELGETUSERBYEMAIL
 

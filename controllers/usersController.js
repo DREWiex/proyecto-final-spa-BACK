@@ -16,27 +16,38 @@ const {
  */
 const getUsers = async (req, res) => {
 
-    try{
+    try {
 
-        const { rowCount, rows } = await modelGetUsers(); // rowCount (devuelve '0' o '1') y rows (devuelve un array de objetos con los datos de los usuarios) son propiedades del objeto JSON de la respuesta
+        const { ok, result } = await modelGetUsers(); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
 
-        if (rowCount == 0){
+        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+
+            return res.status(400).json({
+                ok: false,
+                msg: 'ERROR: no se han podido obtener resultados.'
+            });
+
+        };
+
+        const { rowCount, rows } = result; // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
+
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existen usuarios en la base de datos
 
             res.status(400).json({
                 ok: false,
                 msg: 'ERROR: no existen usuarios en la base de datos.'
             });
 
-        }else{
+        } else {
 
             res.status(200).json({
                 ok: true,
-                data: rows
+                data: rows  // devuelve un array de objetos con las propiedades del objeto que contiene los datos de los usuarios
             });
 
         };
 
-    }catch (error){
+    } catch (error) {
 
         console.log(error);
 
