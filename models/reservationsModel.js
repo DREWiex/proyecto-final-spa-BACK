@@ -193,10 +193,42 @@ const modelUpdateReservation = async (data) => {
 }; //!FUNC-MODELUPDATERESERVATION
 
 
+const modelDeleteReservation = async (id) => {
+
+    let client, result;
+
+    try {
+        
+        client = await pool.connect();
+
+        result = await client.query(reservations.queryDeleteReservation, [ id ]);
+
+    } catch (error) {
+        
+        throw {
+            ok: false,
+            error
+        };
+
+    } finally {
+
+        client.release();
+
+    };
+
+    return {
+        ok: true,
+        result
+    };
+
+}; //!FUNC-MODELDELETERESERVATION
+
+
 module.exports = {
     modelGetReservations,
     modelGetReservationByID,
     modelSearchReservations,
     modelAddReservation,
-    modelUpdateReservation
+    modelUpdateReservation,
+    modelDeleteReservation
 };

@@ -3,7 +3,8 @@ const {
     modelGetReservationByID,
     modelSearchReservations,
     modelAddReservation,
-    modelUpdateReservation
+    modelUpdateReservation,
+    modelDeleteReservation
 } = require('../models/reservationsModel');
 
 
@@ -294,9 +295,61 @@ const updateReservation = async (req, res) => {
 }; //!FUNC-UPDATERESERVATION
 
 
+/**
+ * Eliminar por ID una reserva de la base de datos.
+ * @function deleteRoom
+ * @async
+ * @param {Object} req Objeto de solicitud: recibe 'params'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
+ */
 const deleteReservation = async (req, res) => {
 
-    res.send('Capturando la ruta de deleteReservation.');
+    const { id } = req.params; // destructuración del 'id' de la reserva ('reservation_id') recibido en el objeto 'req.params'
+
+    try {
+        
+        const { result } = await modelGetReservationByID(id); // destructuración de la propiedad 'result' del objeto que devuelve el model
+
+        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
+
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existe reserva con ese id en la base de datos
+
+            return res.status(200).json({
+                ok: false,
+                msg: `ERROR: no existe ninguna reserva con el ID "${id}" en la base de datos.`
+            });
+
+        };
+
+        const { ok } = await modelDeleteReservation(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+        if(!ok){
+
+            res.status(400).json({
+                ok: false,
+                msg: `ERROR: no se ha podido eliminar la reserva con ID "${id}".`
+            });
+
+        } else {
+
+            res.status(200).json({
+                ok: true,
+                msg: `La reserva con ID "${id}" se ha eliminado correctamente.`
+            });
+
+        };
+
+    } catch (error) {
+        
+        console.log(error);
+
+        res.status(500).json({
+            ok: false,
+            msg: 'ERROR: contacte con el administrador.',
+            error
+        });
+
+    };
 
 }; //!FUNC-DELETERESERVATION
 

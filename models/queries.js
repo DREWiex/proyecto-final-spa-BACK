@@ -76,7 +76,10 @@ const reservations = {
     queryUpdateReservation:`
     UPDATE reservations
     SET room_id=$1, reservation_date=$2, start_time=$3, end_time=$4
-    WHERE reservation_id=$5`
+    WHERE reservation_id=$5`,
+    queryDeleteReservation:`
+    DELETE FROM reservations
+    WHERE reservation_id=$1`
 }; //RESERVATIONS
 
 
