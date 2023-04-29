@@ -122,7 +122,7 @@ const getReservationByID = async (req, res) => {
 
 /**
  * Obtener por ID las reservas de una sala de la base de datos.
- * @function getReservationByID
+ * @function searchReservations
  * @async
  * @param {Object} req Objeto de solicitud: recibe 'params'.
  * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
@@ -297,7 +297,7 @@ const updateReservation = async (req, res) => {
 
 /**
  * Eliminar por ID una reserva de la base de datos.
- * @function deleteRoom
+ * @function deleteReservation
  * @async
  * @param {Object} req Objeto de solicitud: recibe 'params'.
  * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
