@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs');
+const generateJWT = require('../helpers/generateJWT');
+
 const {
     modelGetUsers,
     modelGetUserByID,
@@ -6,6 +9,7 @@ const {
     modelDeleteUser,
     modelGetUserByEmail
 } = require('../models/usersModel');
+
 
 /**
  * Obtener todos los usuarios de la base de datos.
@@ -60,6 +64,7 @@ const getUsers = async (req, res) => {
     };
 
 }; //!FUNC-GETUSERS
+
 
 /**
  * Obtener por ID un usuario de la base de datos.
@@ -117,6 +122,7 @@ const getUserByID = async (req, res) => {
 
 }; //!FUNC-GETUSERBYEMAIL
 
+
 /**
  * Crear un usuario en la base de datos.
  * @function addUser
@@ -126,47 +132,49 @@ const getUserByID = async (req, res) => {
  */
 const addUser = async (req, res) => {
 
+    const { email } = req.body; // destructuración de la propiedad 'email' del objeto 'req.body'
+
+    // encriptar password
+    let salt = bcrypt.genSaltSync(10);
+    req.body.password = bcrypt.hashSync(req.body.password, salt);
+
     /**
      * @type {Object}
      */
 
     const data = {
-        role_id: 2, // el valor por defecto será 2 ('user') (1 = 'admin')
+        role_id: req.body.role_id || 2, // si no se especifica (registro –índex–), el valor por defecto será 2 ('user'); esto es porque el admin desde su dashboard sí tendrá la opción de elegir el role
         ...req.body // recibe el objeto body del form de registro o del dashboard del admin
     };
 
-    const { email } = req.body; // destructuración de la propiedad 'email' del objeto 'req.body'
-
     try {
 
-        const { result } = await modelGetUserByEmail(email); // destructuración de la propiedad 'result' del objeto que devuelve el model
+        const emailExists = await modelGetUserByEmail(email);
 
-        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
+        if(emailExists.ok){ // condicional: si el e-mail existe
 
-        if (rowCount == 1) { // condicional: si rowCount es igual a 1, el e-mail ya existe
-
-            return res.status(400).json({
+            return res.status(200).json({
                 ok: false,
                 msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
             });
 
         };
 
-        const { ok } = await modelAddUser(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+        const register = await modelAddUser(data);
 
-        if(!ok){  /// condicional: si 'ok' es false, es por un error y entra en el catch del model
+        if(!register){ // condicional: si register es false
 
             res.status(400).json({
                 ok: false,
-                msg: 'ERROR: no se ha registrado el usuario.'
+                msg: 'ERROR: el usuario no ha sido registrado.'
             });
 
         } else {
 
-            res.status(201).json({
+            res.status(200).json({
                 ok: true,
                 msg: 'El usuario se ha registrado con éxito.',
-                data // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
+                data  // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
             });
 
         };
@@ -184,6 +192,7 @@ const addUser = async (req, res) => {
     };
 
 }; //!FUNC-ADDUSER
+
 
 /**
  * Actualizar/editar por ID un usuario en la base de datos.
@@ -205,69 +214,73 @@ const updateUser = async (req, res) => {
 
     try {
 
-        const { result } = await modelGetUserByEmail(email); // destructuración de la propiedad 'result' del objeto que devuelve el model
+        const emailExists = await modelGetUserByEmail(email);
 
-        const { rowCount, rows } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
+        console.log(emailExists)
 
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el e-mail no existe en la base de datos
+        // const { result } = await modelGetUserByEmail(email); // destructuración de la propiedad 'result' del objeto que devuelve el model
 
-            const { ok } = await modelUpdateUser(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+        // const { rowCount, rows } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
 
-            if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+        // if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el e-mail no existe en la base de datos
 
-                return res.status(400).json({
-                    ok: false,
-                    msg: 'ERROR: no se guardaron los cambios realizados.'
-                });
+        //     const { ok } = await modelUpdateUser(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-            } else {
+        //     if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
 
-                return res.status(200).json({
-                    ok: true,
-                    msg: 'Usuario actualizado con éxito',
-                    data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
-                });
+        //         return res.status(400).json({
+        //             ok: false,
+        //             msg: 'ERROR: no se guardaron los cambios realizados.'
+        //         });
 
-            };
+        //     } else {
 
-        }; //! FIRST-IF-END
+        //         return res.status(200).json({
+        //             ok: true,
+        //             msg: 'Usuario actualizado con éxito',
+        //             data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+        //         });
+
+        //     };
+
+        // }; //! FIRST-IF-END
 
 
-        if(rowCount == 1){ // condicional: si 'rowCount' es igual a 1, el e-mail existe en la base de datos y se pueden dar dos casos:
+        // if(rowCount == 1){ // condicional: si 'rowCount' es igual a 1, el e-mail existe en la base de datos y se pueden dar dos casos:
 
-            const [ { user_id } ] = rows; // destructuración de la propiedad 'user_id' del array de objetos de la propiedad 'rows' que devuelve el objeto de la respuesta del 'modelGetUserByEmail'
+        //     const [ { user_id } ] = rows; // destructuración de la propiedad 'user_id' del array de objetos de la propiedad 'rows' que devuelve el objeto de la respuesta del 'modelGetUserByEmail'
 
-            if(user_id == id){ // si 'user_id' (recibido en 'modelGetUserByEmail') coincide con el 'id' (recibido por params –usuario actual–), el usuario se actualiza porque el e-mail está guardado en la base de datos con su 'user_id'
+        //     if(user_id == id){ // si 'user_id' (recibido en 'modelGetUserByEmail') coincide con el 'id' (recibido por params –usuario actual–), el usuario se actualiza porque el e-mail está guardado en la base de datos con su 'user_id'
 
-                const { ok } = await modelUpdateUser(data);  // destructuración de la propiedad 'ok' del objeto que devuelve el model
+        //         const { ok } = await modelUpdateUser(data);  // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-                if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+        //         if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
 
-                    return res.status(400).json({
-                        ok: false,
-                        msg: 'ERROR: no se guardaron los cambios realizados.'
-                    });
+        //             return res.status(400).json({
+        //                 ok: false,
+        //                 msg: 'ERROR: no se guardaron los cambios realizados.'
+        //             });
 
-                } else {
+        //         } else {
 
-                    return res.status(200).json({
-                        ok: true,
-                        msg: 'Usuario actualizado con éxito',
-                        data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
-                    });
+        //             return res.status(200).json({
+        //                 ok: true,
+        //                 msg: 'Usuario actualizado con éxito',
+        //                 data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+        //             });
 
-                };
+        //         };
 
-            } else { // el e-mail está registrado con un 'user_id' distinto al del usuario actual
+        //     } else { // el e-mail está registrado con un 'user_id' distinto al del usuario actual
 
-                res.status(400).json({
-                    ok: false,
-                    msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
-                });
+        //         res.status(400).json({
+        //             ok: false,
+        //             msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
+        //         });
 
-            };
+        //     };
 
-        }; //! SECOND-IF-END
+        // }; //! SECOND-IF-END
 
 
     } catch (error) {
@@ -283,6 +296,7 @@ const updateUser = async (req, res) => {
     };
 
 }; //!FUNC-UPDATEUSER
+
 
 /**
  * Eliminar por ID un usuario de la base de datos

@@ -89,7 +89,7 @@ const modelAddUser = async (data) => {
         
         client = await pool.connect();
 
-        result = await client.query(users.queryAddUser, [
+        const { rowCount } = await client.query(users.queryAddUser, [
             role_id,
             first_name,
             last_name,
@@ -98,12 +98,11 @@ const modelAddUser = async (data) => {
             avatar
         ]);
 
+        rowCount == 1 ? result = true : result = false; // condicional: true = el usuario se registró / false = el usuario no se registró
+
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -111,10 +110,7 @@ const modelAddUser = async (data) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELADDUSER
 
@@ -205,14 +201,13 @@ const modelGetUserByEmail = async (email) => {
         
         client = await pool.connect();
 
-        result = await client.query(users.queryGetUserByEmail, [ email ]);
+        const { rowCount, rows } = await client.query(users.queryGetUserByEmail, [ email ]);
+
+        rowCount == 0 ? result = { ok: false, data: rows } : result = { ok: true, data: rows }; // false = no existe e-mail / true = sí existe e-mail
 
     } catch (error) {
 
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -220,10 +215,7 @@ const modelGetUserByEmail = async (email) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELGETUSERBYEMAIL
 
