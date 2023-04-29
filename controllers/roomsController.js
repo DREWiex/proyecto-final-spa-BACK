@@ -32,9 +32,9 @@ const getRooms = async (req, res) => {
 
         if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existen salas de estudio en la base de datos
 
-            res.status(400).json({
+            res.status(200).json({
                 ok: false,
-                msg: 'ERROR: no hay salas de estudio guardadas en la base de datos.'
+                msg: 'No hay salas de estudio guardadas en la base de datos.'
             });
 
         } else {
@@ -136,7 +136,7 @@ const addRoom = async (req, res) => {
 
     try {
         
-        const { ok } = await modelAddRoom(data); // destructuración de la propiedad 'ok' del objeto que devuelve el modelo
+        const { ok } = await modelAddRoom(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
         if(!ok){ /// condicional: si 'ok' es false, es por un error y entra en el catch del model
 

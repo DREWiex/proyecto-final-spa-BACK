@@ -17,6 +17,7 @@ app.use(express.json());
 //routes
 app.use('/api/v1/users', require('./routers/usersRouter')); // users API
 app.use('/api/v1/rooms', require('./routers/roomsRouter')); // rooms API
+app.use('/api/v1/reservations', require('./routers/reservationsRouter')); // reservations API
 
 // 404
 app.use((req, res, next) => {

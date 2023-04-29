@@ -53,7 +53,38 @@ const rooms = {
 }; //ROOMS
 
 
+const reservations = {
+    queryGetReservations:`
+    SELECT r.reservation_id, users.user_id, users.first_name, users.last_name, rooms.room, r.reservation_date, r.start_time, r.end_time, r.creation_date
+    FROM ((reservations AS r
+    INNER JOIN users ON r.user_id=users.user_id)
+    INNER JOIN rooms ON r.room_id=rooms.room_id)
+    ORDER BY reservation_date, start_time;`,
+    queryGetReservationByID:`
+    SELECT r.reservation_id, users.user_id, users.first_name, users.last_name, rooms.room, r.reservation_date, r.start_time, r.end_time, r.creation_date
+    FROM ((reservations AS r
+    INNER JOIN users ON r.user_id=users.user_id)
+    INNER JOIN rooms ON r.room_id=rooms.room_id)
+    WHERE reservation_id=$1`,
+    querySearchReservations:`
+    SELECT room_id, reservation_date, start_time, end_time
+    FROM reservations
+    WHERE room_id=$1`,
+    queryAddReservation:`
+    INSERT INTO reservations (user_id, room_id, reservation_date, start_time, end_time)
+    VALUES ($1, $2, $3, $4, $5)`,
+    queryUpdateReservation:`
+    UPDATE reservations
+    SET room_id=$1, reservation_date=$2, start_time=$3, end_time=$4
+    WHERE reservation_id=$5`,
+    queryDeleteReservation:`
+    DELETE FROM reservations
+    WHERE reservation_id=$1`
+}; //RESERVATIONS
+
+
 module.exports = {
     users,
-    rooms
+    rooms,
+    reservations
 }
