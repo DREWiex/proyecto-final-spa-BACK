@@ -29,8 +29,9 @@
             <pre class="prettyprint source linenums"><code>const {
     modelGetReservations,
     modelGetReservationByID,
+    modelSearchReservations,
     modelAddReservation,
-    modelSearchReservations
+    modelUpdateReservation
 } = require('../models/reservationsModel');
 
 
@@ -147,70 +148,6 @@ const getReservationByID = async (req, res) => {
 
 
 /**
- * Crear una reserva de sala de estudio en la base de datos.
- * @function addReservation
- * @async
- * @param {Object} req Objeto de solicitud: recibe 'body'.
- * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
- */
-const addReservation = async (req, res) => {
-
-    /**
-     * @type {Object}
-     */
-
-    const data = req.body; // recibe el objeto body del form del usuario o del dashboard admin (recibe 'user_id' del input hidden del form)
-
-    try {
-        
-        const { ok } = await modelAddReservation(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
-
-        if(!ok){  //? condicional: si 'ok' es false, es por un error y entra en el catch del model
-
-            res.status(400).json({
-                ok: false,
-                msg: 'ERROR: no se ha podido realizar la reserva.'
-            });
-
-        } else {
-
-            res.status(201).json({
-                ok: true,
-                data // devuelve los datos recibidos del form del usuario o del dashboard admin //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
-            });
-
-        };
-
-    } catch (error) {
-        
-        console.log(error);
-
-        res.status(500).json({
-            ok: false,
-            msg: 'ERROR: contacte con el administrador.',
-            error
-        });
-
-    };
-
-}; //!FUNC-ADDRESERVATION
-
-
-const updateReservation = async (req, res) => {
-
-    res.send('Capturando la ruta de updateReservation.');
-
-}; //!FUNC-UPDATERESERVATION
-
-
-const deleteReservation = async (req, res) => {
-
-    res.send('Capturando la ruta de deleteReservation.');
-
-}; //!FUNC-DELETERESERVATION
-
-
-/**
  * Obtener por ID las reservas de una sala de la base de datos.
  * @function getReservationByID
  * @async
@@ -267,13 +204,138 @@ const searchReservations = async (req, res) => {
 }; //!FUNC-SEARCHRESERVATIONS
 
 
+/**
+ * Crear una reserva de sala de estudio en la base de datos.
+ * @function addReservation
+ * @async
+ * @param {Object} req Objeto de solicitud: recibe 'body'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
+ */
+const addReservation = async (req, res) => {
+
+    /**
+     * @type {Object}
+     */
+
+    const data = req.body; // recibe el objeto body del form del usuario o del dashboard admin (recibe 'user_id' del input hidden del form)
+
+    try {
+        
+        const { ok } = await modelAddReservation(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+        if(!ok){  //? condicional: si 'ok' es false, es por un error y entra en el catch del model
+
+            res.status(400).json({
+                ok: false,
+                msg: 'ERROR: no se ha podido realizar la reserva.'
+            });
+
+        } else {
+
+            res.status(201).json({
+                ok: true,
+                data // devuelve los datos recibidos del form del usuario o del dashboard admin //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
+            });
+
+        };
+
+    } catch (error) {
+        
+        console.log(error);
+
+        res.status(500).json({
+            ok: false,
+            msg: 'ERROR: contacte con el administrador.',
+            error
+        });
+
+    };
+
+}; //!FUNC-ADDRESERVATION
+
+
+/**
+ * Actualizar/editar por ID una reserva en la base de datos.
+ * @function updateReservation
+ * @async
+ * @param {Object} req Objeto de solicitud: recibe 'params' y 'body'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
+ */
+const updateReservation = async (req, res) => {
+
+    const { id } = req.params; // destructuración del 'id' de la reserva ('reservation_id') recibido en el objeto 'req.params'
+
+    /**
+     * @type {Object}
+     */
+
+    const data = {
+        reservation_id: id, // renombro la propiedad para que coincida con el model
+        ...req.body // recibe el objeto body del form del usuario o del dashboard admin
+    };
+
+    try {
+
+        const { result } = await modelGetReservationByID(id); // destructuración de la propiedad 'result' del objeto que devuelve el model
+
+        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
+
+        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existe reserva con ese id en la base de datos
+
+            return res.status(200).json({
+                ok: false,
+                msg: `ERROR: no existe ninguna reserva con el ID "${id}".`
+            });
+
+        };
+
+        const { ok } = await modelUpdateReservation(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+        if(!ok){ //? condicional: si 'ok' es false, es por un error y entra en el catch del model
+
+            res.status(400).json({
+                ok: false,
+                msg: `ERROR: la reserva con ID "${id}" no ha sido actualizada.`
+            });
+
+        } else {
+
+            res.status(200).json({
+                ok: true,
+                data // devuelve los datos recibidos del form del usuario o del dashboard admin //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
+            });
+
+        };
+
+    } catch (error) {
+        
+        console.log(error);
+
+        res.status(500).json({
+            ok: false,
+            msg: 'ERROR: contacte con el administrador.',
+            error
+        });
+
+    };
+
+}; //!FUNC-UPDATERESERVATION
+
+
+const deleteReservation = async (req, res) => {
+
+    res.send('Capturando la ruta de deleteReservation.');
+
+}; //!FUNC-DELETERESERVATION
+
+
 module.exports = {
     getReservations,
     getReservationByID,
+    searchReservations,
     addReservation,
     updateReservation,
-    deleteReservation,
-    searchReservations
+    deleteReservation
 };</code></pre>
         </article>
     </section>
@@ -284,13 +346,13 @@ module.exports = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addReservation">addReservation</a></li><li><a href="global.html#addRoom">addRoom</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#deleteRoom">deleteRoom</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#getReservationByID">getReservationByID</a></li><li><a href="global.html#getReservations">getReservations</a></li><li><a href="global.html#getRoomByID">getRoomByID</a></li><li><a href="global.html#getRooms">getRooms</a></li><li><a href="global.html#getUserByID">getUserByID</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#updateRoom">updateRoom</a></li><li><a href="global.html#updateUser">updateUser</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addReservation">addReservation</a></li><li><a href="global.html#addRoom">addRoom</a></li><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#deleteRoom">deleteRoom</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#getReservationByID">getReservationByID</a></li><li><a href="global.html#getReservations">getReservations</a></li><li><a href="global.html#getRoomByID">getRoomByID</a></li><li><a href="global.html#getRooms">getRooms</a></li><li><a href="global.html#getUserByID">getUserByID</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#updateReservation">updateReservation</a></li><li><a href="global.html#updateRoom">updateRoom</a></li><li><a href="global.html#updateUser">updateUser</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Apr 28 2023 20:38:10 GMT+0200 (hora de verano de Europa central)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Apr 29 2023 08:30:01 GMT+0200 (hora de verano de Europa central)
 </footer>
 
 <script> prettyPrint(); </script>

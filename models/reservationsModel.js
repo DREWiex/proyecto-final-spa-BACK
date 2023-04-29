@@ -72,6 +72,37 @@ const modelGetReservationByID = async (id) => {
 }; //!FUNC-MODELGETRESERVATIONBYID
 
 
+const modelSearchReservations = async (id) => {
+
+    let client, result;
+
+    try {
+        
+        client = await pool.connect();
+
+        result = await client.query(reservations.querySearchReservations, [ id ]);
+
+    } catch (error) {
+        
+        throw {
+            ok: false,
+            error
+        };
+
+    } finally {
+
+        client.release();
+
+    };
+
+    return {
+        ok: true,
+        result
+    };
+
+}; //!FUNC-MODELSEARCHRESERVATIONS
+
+
 const modelAddReservation = async (data) => {
 
     let client, result;
@@ -117,15 +148,29 @@ const modelAddReservation = async (data) => {
 }; //!FUNC-MODELADDRESERVATION
 
 
-const modelSearchReservations = async (id) => {
+const modelUpdateReservation = async (data) => {
 
     let client, result;
+
+    const {
+        room_id,
+        reservation_date,
+        start_time,
+        end_time,
+        reservation_id
+    } = data;
 
     try {
         
         client = await pool.connect();
 
-        result = await client.query(reservations.querySearchReservations, [ id ]);
+        result = await client.query(reservations.queryUpdateReservation, [
+            room_id,
+            reservation_date,
+            start_time,
+            end_time,
+            reservation_id
+        ]);
 
     } catch (error) {
         
@@ -145,12 +190,13 @@ const modelSearchReservations = async (id) => {
         result
     };
 
-};
+}; //!FUNC-MODELUPDATERESERVATION
 
 
 module.exports = {
     modelGetReservations,
     modelGetReservationByID,
+    modelSearchReservations,
     modelAddReservation,
-    modelSearchReservations
+    modelUpdateReservation
 };
