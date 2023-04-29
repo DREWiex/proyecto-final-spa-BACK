@@ -143,10 +143,7 @@ const modelUpdateUser = async (data) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -154,10 +151,7 @@ const modelUpdateUser = async (data) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELUPDATEUSER
 
