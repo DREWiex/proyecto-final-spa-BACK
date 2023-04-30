@@ -46,33 +46,29 @@ const login = async (req, res) => {
                 msg: 'ERROR: e-mail o contraseña incorrectos.'
             });
 
-        } else {
-
-            const { password } = data; // destructuración de la propiedad 'password' del objeto 'data' (model)
-
-            const passwordOkay = bcrypt.compareSync(loginPassword, password); // comparación del password recibido del form del login y el password guardado en la base de datos
-
-            if(!passwordOkay){ // condicional: si el password del login no coincide con el password registrado en la base de datos
-
-                return res.status(401).json({
-                    ok: false,
-                    msg: 'ERROR: e-mail o contraseña incorrectos.'
-                });
-
-            } else { // condicional: si coinciden e-mail y password del login con los que se comparan de la base de datos
-
-                const token = generateJWT(data); // generar token
-
-                res.status(200).json({
-                    ok: true,
-                    msg: 'Credenciales correctas.',
-                    data, // devuelve un objeto con los datos del usuario que están guardados en la base de datos
-                    token // devuelve el token
-                });
-
-            };
-
         };
+
+        const { password } = data; // destructuración de la propiedad 'password' del objeto 'data' (model)
+
+        const passwordOkay = bcrypt.compareSync(loginPassword, password); // comparación del password recibido del form del login y el password guardado en la base de datos
+
+        if(!passwordOkay){ // condicional: si 'loginPassword' no coincide con el password del e-mail registrado en la base de datos ('loginEmail')
+
+            return res.status(401).json({
+                ok: false,
+                msg: 'ERROR: e-mail o contraseña incorrectos.'
+            });
+
+        }
+
+        const token = generateJWT(data); // generar token
+
+        res.status(200).json({
+            ok: true,
+            msg: 'Credenciales correctas.',
+            data, // devuelve un objeto con los datos del usuario que están guardados en la base de datos
+            token // devuelve el token
+        });
 
     } catch (error) {
         
