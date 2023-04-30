@@ -11,8 +11,6 @@ const validation = (req, res, next) => {
 
     };
 
-    console.log('VALIDATION:', res.errors);
-
     next();
     
 };
