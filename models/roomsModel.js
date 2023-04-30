@@ -18,14 +18,13 @@ const modelGetRooms = async () => {
         
         client = await pool.connect();
 
-        result = await client.query(rooms.queryGetRooms);
+        const { rowCount, rows: data } = await client.query(rooms.queryGetRooms);
+
+        rowCount == 0 ? result = { ok: false, data } : result = { ok: true, data };
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -33,10 +32,7 @@ const modelGetRooms = async () => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELGETROOMS
 
@@ -49,14 +45,15 @@ const modelGetRoomByID = async (id) => {
         
         client = await pool.connect();
 
-        result = await client.query(rooms.queryGetRoomByID, [ id ]);
+        const { rowCount, rows } = await client.query(rooms.queryGetRoomByID, [ id ]);
+
+        const [ data ] = rows; // destructuración del array de la propiedad 'rows'
+
+        rowCount == 0 ? result = { ok: false, data } : result = { ok: true, data }; // si es igual a 0, no existe la sala de estudio / si es distinto de 0, sí existe la sala de estudio
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -64,10 +61,7 @@ const modelGetRoomByID = async (id) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELGETROOMBYID
 
@@ -135,10 +129,7 @@ const modelUpdateRoom = async (data) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -146,10 +137,7 @@ const modelUpdateRoom = async (data) => {
 
     };
 
-    return{
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELUPDATEROOM
 
@@ -166,10 +154,7 @@ const modelDeleteRoom = async (id) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -177,10 +162,7 @@ const modelDeleteRoom = async (id) => {
 
     };
 
-    return{
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELDELETEROOM
 

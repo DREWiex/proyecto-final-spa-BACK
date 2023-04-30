@@ -28,7 +28,7 @@ const login = async (req, res) => {
 
             return res.status(200).json({
                 ok: false,
-                errors: res.errors
+                errors: res.errors // devuelve un objeto con los errores
             });
 
         };

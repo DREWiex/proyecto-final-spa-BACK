@@ -145,7 +145,7 @@ const addUser = async (req, res) => {
 
             return res.status(200).json({
                 ok: false,
-                errors: res.errors
+                errors: res.errors // devuelve un objeto con los errores
             });
 
         };
@@ -187,8 +187,8 @@ const addUser = async (req, res) => {
             res.status(200).json({
                 ok: true,
                 msg: 'El usuario se ha registrado con éxito.',
-                newUser,  // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
-                token // devuelve el token
+                newUser,  // devuelve los datos del usuario ya registrados en la base de datos
+                token
             });
 
         };
@@ -258,7 +258,7 @@ const updateUser = async (req, res) => {
 
             return res.status(200).json({
                 ok: false,
-                errors: res.errors
+                errors: res.errors // devuelve un objeto con los errores
             });
 
         };
@@ -287,8 +287,8 @@ const updateUser = async (req, res) => {
                 res.status(200).json({
                     ok: true,
                     msg: 'Usuario actualizado con éxito.',
-                    updatedData, // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
-                    token // devuelve el token
+                    updatedData, // devuelve los datos del usuario ya actualizados en la base de datos
+                    token
                 });
 
             } else { // caso 2: el e-mail ya está registrado en la base de datos con otro 'user_id'
@@ -306,15 +306,15 @@ const updateUser = async (req, res) => {
 
             // obtengo los datos actualizados del usuario para pasarlos como argumento a la función que genera el token
             const { data: updatedData } = await modelGetUserByEmail(email);  // destructuración de la propiedad 'data' del objeto que devuelve el model
-            // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos (propiedad 'data' del model –línea 222–)            
+            // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos            
 
             const token = generateJWT(updatedData); // generar token
 
             res.status(200).json({
                 ok: true,
                 msg: 'Usuario actualizado con éxito.',
-                updatedData, // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
-                token // devuelve el token
+                updatedData, // devuelve los datos del usuario ya actualizados en la base de datos
+                token
             });
 
         };

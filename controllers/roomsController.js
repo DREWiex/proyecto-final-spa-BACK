@@ -18,20 +18,9 @@ const getRooms = async (req, res) => {
 
     try {
         
-        const { ok, result } = await modelGetRooms(); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
+        const { ok, data } = await modelGetRooms(); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
 
-        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
-
-            return res.status(400).json({
-                ok: false,
-                msg: 'ERROR: no se han podido obtener resultados.'
-            });
-
-        };
-
-        const { rowCount, rows } = result; // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
-
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existen salas de estudio en la base de datos
+        if(!ok){ // condicional: si 'ok' es false, no existen salas de estudio
 
             res.status(200).json({
                 ok: false,
@@ -42,7 +31,7 @@ const getRooms = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                data: rows // devuelve un array de objetos con las propiedades del objeto que contiene los datos de las salas de estudio
+                data // devuelve un array de objetos con las propiedades del objeto que contiene los datos de las salas de estudio
             });
 
         };
@@ -75,20 +64,9 @@ const getRoomByID = async (req, res) => {
 
     try {
         
-        const { ok, result } = await modelGetRoomByID(id); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
+        const { ok, data } = await modelGetRoomByID(id); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
 
-        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
-
-            return res.status(400).json({
-                ok: false,
-                msg: 'ERROR: no se han podido obtener resultados.'
-            });
-
-        };
-
-        const { rowCount, rows } = result; // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
-
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existe la sala de estudio en la base de datos
+        if(!ok){ // condicional: si 'ok' es false, la sala de estudio no existe
 
             res.status(400).json({
                 ok: false,
@@ -99,7 +77,7 @@ const getRoomByID = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                data: rows // devuelve un array con el objeto que contiene los datos de las salas de estudio
+                data // devuelve un objeto con los datos de la sala de estudio guardados en la base de datos
             });
 
         };
@@ -140,16 +118,20 @@ const addRoom = async (req, res) => {
 
     try {
 
+        // VALIDACIÓN 1: INPUT ERRORS
+
         if(res.errors){ // condicional: validación de errores en los inputs del form
 
             return res.status(200).json({
                 ok: false,
-                errors: res.errors
+                errors: res.errors // devuelve un objeto con los errores
             });
 
         };
+
+        // CREAR SALA DE ESTUDIO
         
-        await modelAddRoom(newRoom); // crear nueva sala de estudio
+        await modelAddRoom(newRoom); // crear nueva sala de estudio en la base de datos
 
         res.status(201).json({
             ok: true,
@@ -187,18 +169,29 @@ const updateRoom = async (req, res) => {
      * @type {Object}
      */
 
-    const data = {
+    const newData = {
         room_id: id, // renombro la propiedad para que coincida con el model
         ...req.body // spread de todas las propiedades que recibe el objeto 'req.body' del form desde el dashboard del admin
     };
 
     try {
 
-        const { result } = await modelGetRoomByID(id); // destructuración de la propiedad 'result' del objeto que devuelve el model
+        // VALIDACIÓN 1: INPUT ERRORS
 
-        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
+        if(res.errors){ // condicional: validación de errores en los inputs del form
 
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el 'id' (la sala de estudio) no existe en la bbdd
+            return res.status(200).json({
+                ok: false,
+                errors: res.errors // devuelve un objeto con los errores
+            });
+
+        };
+
+        // VALIDACIÓN 2: ID
+
+        const { ok } = await modelGetRoomByID(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+        if(!ok){ // condicional: si 'ok' es false, la sala de estudio no existe
 
             return res.status(400).json({
                 ok: false,
@@ -207,23 +200,18 @@ const updateRoom = async (req, res) => {
 
         };
 
-        const { ok } = await modelUpdateRoom(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+        // ACTUALIZAR SALA DE ESTUDIO
 
-        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+        await modelUpdateRoom(newData); // actualizar la sala de estudio en la base de datos
 
-            res.status(400).json({
-                ok: false,
-                msg: `ERROR: no se han actualizado los datos de la sala de estudio con ID "${id}"`
-            });
+        // obtengo los datos actualizados de la sala de estudio
+        const { data: updatedData } = await modelGetRoomByID(id); // destructuración de la propiedad 'data' del objeto que devuelve el model
+        // renombro la propiedad 'data' para facilitar la interpretación
 
-        } else {
-
-            res.status(200).json({
-                ok: true,
-                data // devuelve los datos recibidos del form del dashboard admin más el 'room_id' recibido por params
-            });
-
-        };
+        res.status(200).json({
+            ok: true,
+            updatedData // devuelve los datos de la sala de estudio ya actualizados en la base de datos
+        });
 
     } catch (error) {
         
@@ -253,29 +241,18 @@ const deleteRoom = async (req, res) => {
 
     try {
 
-        const { result } = await modelGetRoomByID(id); // destructuración de la propiedad 'result' del objeto que devuelve el model
+        const { ok } = await modelGetRoomByID(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
+        if(!ok){ // condicional: si 'ok' es false, la sala de estudio no existe
 
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, el 'id' (la sala de estudio) no existe en la base de datos
-
-            return res.status(400).json({
+            res.status(400).json({
                 ok: false,
                 msg: `ERROR: no existe la sala de estudio con ID "${id}" en la base de datos.`
             });
 
-        };
-        
-        const { ok } = await modelDeleteRoom(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
-
-        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
-
-            res.status(400).json({
-                ok: false,
-                msg: `ERROR: no se ha podido eliminar la sala de estudio con ID "${id}".`
-            });
-
         } else {
+        
+            await modelDeleteRoom(id); // eliminar la sala de estudio de la base de datos
 
             res.status(200).json({
                 ok: true,
