@@ -138,6 +138,20 @@ const addUser = async (req, res) => {
 
     try {
 
+        //! VALIDACIÓN 1: INPUT ERRORS
+
+        if(res.errors){
+
+            return res.status(200).json({
+                ok: false,
+                errors: res.errors
+            });
+
+        };
+
+
+        //! VALIDACIÓN 2: E-MAIL
+
         const emailExists = await modelGetUserByEmail(email);
 
         if(emailExists.ok){ // condicional: si el e-mail existe
@@ -148,6 +162,9 @@ const addUser = async (req, res) => {
             });
 
         };
+
+
+        //! VALIDACIÓN 3: REGISTRO
 
         const register = await modelAddUser(data);
 
@@ -234,7 +251,19 @@ const updateUser = async (req, res) => {
         };
 
 
-        //! VALIDACIÓN 2: E-MAIL
+        //! VALIDACIÓN 2: INPUT ERRORS
+
+        if(res.errors){
+
+            return res.status(200).json({
+                ok: false,
+                errors: res.errors
+            });
+
+        };
+
+
+        //! VALIDACIÓN 3: E-MAIL
 
         const { ok: emailExists, data } = await modelGetUserByEmail(email); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
         // renombro la propiedad 'ok' para facilitar interpretación del condicional
