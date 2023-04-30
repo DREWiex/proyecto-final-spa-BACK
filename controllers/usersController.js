@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const generateJWT = require('../helpers/generateJWT');
 
 const {
     modelGetUsers,
@@ -161,6 +162,8 @@ const addUser = async (req, res) => {
 
         const register = await modelAddUser(data);
 
+        const token = generateJWT(data); // generar token
+
         if(!register){ // condicional: si register es false
 
             res.status(400).json({
@@ -173,7 +176,8 @@ const addUser = async (req, res) => {
             res.status(200).json({
                 ok: true,
                 msg: 'El usuario se ha registrado con éxito.',
-                data  // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
+                data,  // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
+                token // devuelve el token
             });
 
         };
@@ -225,7 +229,7 @@ const updateUser = async (req, res) => {
 
         if(emailExists.ok){ // condicional: si 'ok' (propiedad del objeto que devuelve la respuesta del model) es true, el e-mail existe y se pueden dar dos casos:
 
-            const [ { user_id } ] = emailExists.data; // destructuración de la propiedad 'user_id' del array de objetos de la propiedad 'data' que devuelve el objeto de la respuesta del model
+            const [ { user_id } ] = emailExists.data; // destructuración de la propiedad 'user_id' del objeto del array de la propiedad 'data' que devuelve el objeto de la respuesta del model
 
             if(user_id == id){ // si 'user_id' (propiedad que devuelve el model) coincide con 'id' (recibido por params –usuario actual–), el usuario se actualiza porque el e-mail está guardado en la base de datos con su 'user_id'; es decir, el usuario está registrado con ese e-mail
 
