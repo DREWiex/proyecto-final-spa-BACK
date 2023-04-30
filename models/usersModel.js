@@ -49,14 +49,15 @@ const modelGetUserByID = async (id) => {
         
         client = await pool.connect();
 
-        result = await client.query(users.queryGetUserByID, [ id ]);
+        const { rowCount, rows } = await client.query(users.queryGetUserByID, [ id ]);
+
+        const [ data ] = rows; // destructuración del array de la propiedad 'rows'
+
+        rowCount == 0 ? result = { ok: false, data } : result = { ok: true, data }; // si es igual a 0, no existe el usuario / si es distinto de 0, sí existe el usuario
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -64,10 +65,7 @@ const modelGetUserByID = async (id) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELGETUSERBYID
 
@@ -168,10 +166,7 @@ const modelDeleteUser = async (id) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -179,10 +174,7 @@ const modelDeleteUser = async (id) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELDELETEUSER
 
@@ -197,7 +189,9 @@ const modelGetUserByEmail = async (email) => {
 
         const { rowCount, rows } = await client.query(users.queryGetUserByEmail, [ email ]);
 
-        rowCount == 0 ? result = { ok: false, data: rows } : result = { ok: true, data: rows }; // false = no existe e-mail / true = sí existe e-mail
+        const [ data ] = rows; // destructuración del array de la propiedad 'rows'
+
+        rowCount == 0 ? result = { ok: false, data } : result = { ok: true, data }; // si es igual a 0, no existe el e-mail / si es distinto de cero, sí existe e-mail
 
     } catch (error) {
 

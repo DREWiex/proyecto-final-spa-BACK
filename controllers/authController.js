@@ -22,9 +22,10 @@ const login = async (req, res) => {
 
     try {
         
-        const { ok: emailExists, data} = await modelGetUserByEmail(loginEmail); // renombro la propiedad 'ok' del objeto que devuelve el model
+        const { ok: emailExists, data } = await modelGetUserByEmail(loginEmail); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
+        // renombro la propiedad 'ok' para facilitar interpretación del condicional
 
-        const [ { password, user_id, role } ] = data; // destructuración de las propiedades 'password', 'user_id' y 'role' del objeto del array de la propiedad 'data' que devuelve el model
+        const { password } = data; // destructuración de la propiedad 'password' del objeto 'data'
 
         const passwordOkay = bcrypt.compareSync(loginPassword, password); // comparación del password recibido del form del login y el password guardado en la base de datos
 
@@ -37,12 +38,12 @@ const login = async (req, res) => {
 
         };
 
-        const token = generateJWT(user_id, role);
+        const token = generateJWT(data); // generar token
 
         res.status(200).json({
             ok: true,
             msg: 'Credenciales correctas.',
-            data, // devuelve los datos del usuario de la base de datos
+            data, // devuelve un objeto con los datos del usuario que están guardados en la base de datos
             token // devuelve el token
         });
 
