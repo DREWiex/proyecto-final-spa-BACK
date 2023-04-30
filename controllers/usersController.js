@@ -128,6 +128,7 @@ const addUser = async (req, res) => {
     req.body.password = bcrypt.hashSync(req.body.password, salt);
 
     /**
+     * Contiene los datos del nuevo usuario que se guardarán en la base de datos.
      * @type {Object}
      */
 
@@ -225,7 +226,7 @@ const updateUser = async (req, res) => {
     req.body.password = bcrypt.hashSync(req.body.password, salt);
 
     /**
-     * Contiene los datos editados del usuario que se guardarán en la base de datos.
+     * Contiene los datos editados del usuario que se actualizarán en la base de datos.
      * @type {Object}
      */
 

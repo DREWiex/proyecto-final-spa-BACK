@@ -20,7 +20,9 @@ const validateUser = [
         .withMessage('La contraseña debe tener entre 6 y 10 caracteres.'),
     check('avatar')
         .notEmpty()
-        .withMessage('La foto de perfil es obligatoria.'),
+        .withMessage('La foto de perfil es obligatoria.')
+        .isURL()
+        .withMessage('La foto debe tener una URL válida.'),
     (req, res, next) => {
         validation(req, res, next);
     }

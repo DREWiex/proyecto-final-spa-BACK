@@ -129,33 +129,32 @@ const getRoomByID = async (req, res) => {
 const addRoom = async (req, res) => {
 
     /**
+     * Contiene los datos de la nueva sala de estudio que se guardarán en la base de datos.
      * @type {Object}
      */
 
-    const data = {
+    const newRoom = {
         role_id: 1, // el valor por defecto será 1 ('admin'), ya que solo el admin podrá crear salas de estudio nuevas 
         ...req.body // recibe el objeto body del form del dashboard admin (recibe 'user_id' del input hidden del form)
     };
 
     try {
-        
-        const { ok } = await modelAddRoom(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-        if(!ok){ /// condicional: si 'ok' es false, es por un error y entra en el catch del model
+        if(res.errors){ // condicional: validación de errores en los inputs del form
 
-            res.status(400).json({
+            return res.status(200).json({
                 ok: false,
-                msg: 'ERROR: no se ha creado la sala de estudio.'
-            });
-
-        } else {
-
-            res.status(201).json({
-                ok: true,
-                data // devuelve los datos recibidos del form del dashboard admin más el 'role_id' que, por defecto, será 1 ('admin')
+                errors: res.errors
             });
 
         };
+        
+        await modelAddRoom(newRoom); // crear nueva sala de estudio
+
+        res.status(201).json({
+            ok: true,
+            newRoom // devuelve los datos recibidos del form del dashboard admin más el 'role_id' que, por defecto, será 1 ('admin')
+        });
 
     } catch (error) {
         
@@ -181,9 +180,10 @@ const addRoom = async (req, res) => {
  */
 const updateRoom = async (req, res) => {
 
-    const { id } = req.params; // destructuración del 'id' de la sala estudio ('room_id') recibido en el objeto req.params
+    const { id } = req.params; // destructuración del 'id' de la sala estudio ('room_id') recibido en el objeto 'req.params'
 
     /**
+     * Contiene los datos editados de la sala de estudio que se actualizarán en la base de datos.
      * @type {Object}
      */
 

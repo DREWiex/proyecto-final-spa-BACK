@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 
-const { validateUser } = require('../validators/users');
+const { validateUser } = require('../validators/user');
 
 const {
     getUsers,

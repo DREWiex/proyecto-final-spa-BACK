@@ -98,10 +98,7 @@ const modelAddRoom = async (data) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -109,10 +106,7 @@ const modelAddRoom = async (data) => {
 
     };
 
-    return{
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELADDROOM
 
