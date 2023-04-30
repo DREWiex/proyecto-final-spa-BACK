@@ -219,6 +219,22 @@ const updateUser = async (req, res) => {
 
     try {
 
+        //! VALIDACIÓN 1: ID
+
+        const { ok } = await modelGetUserByID(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+
+        if(!ok){ // condicional: si 'ok' es false, el usuario no existe
+
+            return res.status(400).json({
+                ok: false,
+                msg: `ERROR: no existe ningún usuario con el ID "${id}" en la base de datos.`
+            });
+
+        };
+
+
+        //! VALIDACIÓN 2: E-MAIL
+
         const { ok: emailExists, data } = await modelGetUserByEmail(email); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
         // renombro la propiedad 'ok' para facilitar interpretación del condicional
 
@@ -263,7 +279,7 @@ const updateUser = async (req, res) => {
 
             const token = generateJWT(updatedData); // generar token
 
-            return res.status(200).json({
+            res.status(200).json({
                 ok: true,
                 msg: 'Usuario actualizado con éxito.',
                 updatedData, // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
