@@ -18,9 +18,9 @@ const modelGetRooms = async () => {
         
         client = await pool.connect();
 
-        const { rowCount, rows: data } = await client.query(rooms.queryGetRooms);
+        const { rowCount, rows } = await client.query(rooms.queryGetRooms); // destructuración de las propiedades 'rowCount' y 'rows'
 
-        rowCount == 0 ? result = { ok: false, data } : result = { ok: true, data };
+        rowCount == 0 ? result = { ok: false, data: rows } : result = { ok: true, data: rows };
 
     } catch (error) {
         

@@ -19,23 +19,12 @@ const getReservations = async (req, res) => {
 
     try {
         
-        const { ok, result } = await modelGetReservations();  // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
+        const { ok, data } = await modelGetReservations();  // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
 
-        if(!ok){  //? condicional: si 'ok' es false, es por un error y entra en el catch del model
+        if(!ok){ // condicional: si 'ok' es false, no existen reservas
 
-            return res.status(400).json({
+            res.status(400).json({
                 ok: false,
-                msg: 'ERROR: no se han podido obtener resultados.'
-            });
-
-        };
-
-        const { rowCount, rows } = result;  // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
-
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existen reservas en la base de datos
-
-            res.status(200).json({
-                ok: true,
                 msg: 'No hay reservas guardadas en la base de datos.'
             });
 
@@ -43,7 +32,7 @@ const getReservations = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                data: rows  // devuelve un array de objetos con las propiedades del objeto que contiene los datos de las reservas
+                data  // devuelve un array de objetos con las propiedades del objeto que contiene los datos de las reservas
             });
 
         };
@@ -72,24 +61,13 @@ const getReservations = async (req, res) => {
  */
 const getReservationByID = async (req, res) => {
 
-    const { id } = req.params; // destructuración del 'id' de la reserva ('reservation_id') recibido en el objeto req.params
+    const { id } = req.params; // destructuración del 'id' de la reserva ('reservation_id') recibido en el objeto 'req.params'
 
     try {
         
-        const { ok, result } = await modelGetReservationByID(id); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
+        const { ok, data } = await modelGetReservationByID(id); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
 
-        if(!ok){ //? condicional: si 'ok' es false, es por un error y entra en el catch del model
-
-            return res.status(400).json({
-                ok: false,
-                msg: 'ERROR: no se han podido obtener resultados.'
-            });
-
-        };
-
-        const { rowCount, rows } = result; // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
-
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existe reserva con ese id en la base de datos
+        if(!ok){ // condicional: si 'ok' es false, la reserva no existe
 
             res.status(400).json({
                 ok: false,
@@ -100,7 +78,7 @@ const getReservationByID = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                data: rows // devuelve un array con el objeto que contiene los datos de la reserva
+                data // devuelve un objeto con los datos de la reserva
             });
 
         };
@@ -129,38 +107,27 @@ const getReservationByID = async (req, res) => {
  */
 const searchReservations = async (req, res) => {
 
-    const { id } = req.params;  // destructuración del 'id' de la sala de estudio ('room_id') recibido en el objeto req.params (el front-end lo recibe del form desde el usuario o desde el dashboard admin y se lo pasa a la url del fetch)
+    const { id } = req.params;  // destructuración del 'id' de la sala de estudio ('room_id') recibido en el objeto 'req.params' (el front-end lo recibe del form desde el usuario o desde el dashboard admin y se lo pasa a la url del fetch)
 
     try {
         
-        const { ok, result } = await modelSearchReservations(id); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
+        const { ok, data } = await modelSearchReservations(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-        if(!ok){ //? condicional: si 'ok' es false, es por un error y entra en el catch del model
-
-            return res.status(400).json({
-                ok: false,
-                msg: 'ERROR: no se han podido obtener resultados.'
-            });
-
-        };
-
-        const { rowCount, rows } = result; // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
-
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existen reservas en la sala con ese id en la base de datos
+        if(!ok){ // condicional: si 'ok' es false, no existen reservas para la sala de estudio
 
             res.status(200).json({
-                ok: false,
-                msg: `No hay ninguna reserva hecha en la sala con ID "${id}".`
+                ok: true,
+                msg: `No existen reservas para la sala con ID "${id}".`
             });
 
         } else {
 
             res.status(200).json({
                 ok: true,
-                data: rows // devuelve un array con el objeto que contiene los datos de las reservas de la sala
+                data // devuelve un array con el objeto que contiene los datos de las reservas de la sala
             });
 
-        }
+        };
 
     } catch (error) {
         
@@ -308,33 +275,22 @@ const deleteReservation = async (req, res) => {
 
     try {
         
-        const { result } = await modelGetReservationByID(id); // destructuración de la propiedad 'result' del objeto que devuelve el model
+        const { ok } = await modelGetReservationByID(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
+        if(!ok){ // condicional: si 'ok' es false, la reserva no existe
 
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existe reserva con ese id en la base de datos
-
-            return res.status(200).json({
+            res.status(400).json({
                 ok: false,
                 msg: `ERROR: no existe ninguna reserva con el ID "${id}" en la base de datos.`
             });
 
-        };
-
-        const { ok } = await modelDeleteReservation(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
-
-        if(!ok){
-
-            res.status(400).json({
-                ok: false,
-                msg: `ERROR: no se ha podido eliminar la reserva con ID "${id}".`
-            });
-
         } else {
+
+            await modelDeleteReservation(id);
 
             res.status(200).json({
                 ok: true,
-                msg: `La reserva con ID "${id}" se ha eliminado correctamente.`
+                msg: `La reserva se ha eliminado correctamente.`
             });
 
         };

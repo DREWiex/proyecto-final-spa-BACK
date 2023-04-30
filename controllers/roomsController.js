@@ -22,7 +22,7 @@ const getRooms = async (req, res) => {
 
         if(!ok){ // condicional: si 'ok' es false, no existen salas de estudio
 
-            res.status(200).json({
+            res.status(400).json({
                 ok: false,
                 msg: 'No hay salas de estudio guardadas en la base de datos.'
             });
@@ -77,7 +77,7 @@ const getRoomByID = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                data // devuelve un objeto con los datos de la sala de estudio guardados en la base de datos
+                data // devuelve un objeto con los datos de la sala de estudio
             });
 
         };
