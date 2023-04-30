@@ -49,14 +49,15 @@ const modelGetUserByID = async (id) => {
         
         client = await pool.connect();
 
-        result = await client.query(users.queryGetUserByID, [ id ]);
+        const { rowCount, rows } = await client.query(users.queryGetUserByID, [ id ]);
+
+        const [ data ] = rows; // destructuración del array de la propiedad 'rows'
+
+        rowCount == 0 ? result = { ok: false, data } : result = { ok: true, data }; // si es igual a 0, no existe el usuario / si es distinto de 0, sí existe el usuario
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -64,10 +65,7 @@ const modelGetUserByID = async (id) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELGETUSERBYID
 
@@ -89,7 +87,7 @@ const modelAddUser = async (data) => {
         
         client = await pool.connect();
 
-        result = await client.query(users.queryAddUser, [
+        const { rowCount } = await client.query(users.queryAddUser, [
             role_id,
             first_name,
             last_name,
@@ -98,12 +96,11 @@ const modelAddUser = async (data) => {
             avatar
         ]);
 
+        rowCount == 1 ? result = true : result = false; // condicional: true = el usuario se registró / false = el usuario no se registró
+
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -111,10 +108,7 @@ const modelAddUser = async (data) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELADDUSER
 
@@ -124,6 +118,7 @@ const modelUpdateUser = async (data) => {
     let client, result;
 
     const {
+        role_id,
         first_name,
         last_name,
         email,
@@ -137,6 +132,7 @@ const modelUpdateUser = async (data) => {
         client = await pool.connect();
 
         result = await client.query(users.queryUpdateUser, [
+            role_id,
             first_name,
             last_name,
             email,
@@ -147,10 +143,7 @@ const modelUpdateUser = async (data) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -158,10 +151,7 @@ const modelUpdateUser = async (data) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELUPDATEUSER
 
@@ -178,10 +168,7 @@ const modelDeleteUser = async (id) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -189,10 +176,7 @@ const modelDeleteUser = async (id) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELDELETEUSER
 
@@ -205,14 +189,15 @@ const modelGetUserByEmail = async (email) => {
         
         client = await pool.connect();
 
-        result = await client.query(users.queryGetUserByEmail, [ email ]);
+        const { rowCount, rows } = await client.query(users.queryGetUserByEmail, [ email ]);
+
+        const [ data ] = rows; // destructuración del array de la propiedad 'rows'
+
+        rowCount == 0 ? result = { ok: false, data } : result = { ok: true, data }; // si es igual a 0, no existe el e-mail / si es distinto de cero, sí existe e-mail
 
     } catch (error) {
 
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -220,10 +205,7 @@ const modelGetUserByEmail = async (email) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELGETUSERBYEMAIL
 

@@ -6,6 +6,7 @@ const {
     modelDeleteRoom
 } = require('../models/roomsModel');
 
+
 /**
  * Obtener todas las salas de estudio de la base de datos.
  * @function getRooms
@@ -59,6 +60,7 @@ const getRooms = async (req, res) => {
     };
 
 }; //!FUNC-GETROOMS
+
 
 /**
  * Obtener por ID una sala de estudio de la base de datos.
@@ -116,6 +118,7 @@ const getRoomByID = async (req, res) => {
 
 }; //!FUNC-GETROOMBYID
 
+
 /**
  * Crear una sala de estudio en la base de datos.
  * @function addRoom
@@ -167,6 +170,7 @@ const addRoom = async (req, res) => {
     };
 
 }; //!FUNC-ADDROOM
+
 
 /**
  * Actualizar/editar por ID una sala de estudio en la base de datos.
@@ -234,6 +238,7 @@ const updateRoom = async (req, res) => {
     };
 
 }; //!FUNC-UPDATEROOM
+
 
 /**
  * Eliminar por ID una sala de estudio de la base de datos.
