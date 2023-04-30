@@ -14,8 +14,8 @@ const users = {
     VALUES ($1, $2, $3, $4, $5, $6)`,
     queryUpdateUser: `
     UPDATE users
-    SET first_name=$1, last_name=$2, email=$3, password=$4, avatar=$5
-    WHERE user_id=$6`,
+    SET role_id=$1, first_name=$2, last_name=$3, email=$4, password=$5, avatar=$6
+    WHERE user_id=$7`,
     queryDeleteUser: `
     DELETE FROM users
     WHERE user_id=$1;`,

@@ -118,6 +118,7 @@ const modelUpdateUser = async (data) => {
     let client, result;
 
     const {
+        role_id,
         first_name,
         last_name,
         email,
@@ -131,6 +132,7 @@ const modelUpdateUser = async (data) => {
         client = await pool.connect();
 
         result = await client.query(users.queryUpdateUser, [
+            role_id,
             first_name,
             last_name,
             email,

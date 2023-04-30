@@ -151,8 +151,6 @@ const addUser = async (req, res) => {
 
         const register = await modelAddUser(data);
 
-        const token = generateJWT(data); // generar token
-
         if(!register){ // condicional: si register es false
 
             res.status(400).json({
@@ -162,10 +160,16 @@ const addUser = async (req, res) => {
 
         } else {
 
+            // obtengo los datos del nuevo usuario para pasarlos como argumento a la función que genera el token
+            const { data: newUser } = await modelGetUserByEmail(email); // destructuración de la propiedad 'data' del objeto que devuelve el model
+            // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos ('const data')
+
+            const token = generateJWT(newUser); // generar token
+
             res.status(200).json({
                 ok: true,
                 msg: 'El usuario se ha registrado con éxito.',
-                data,  // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
+                newUser,  // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
                 token // devuelve el token
             });
 
@@ -204,49 +208,66 @@ const updateUser = async (req, res) => {
     req.body.password = bcrypt.hashSync(req.body.password, salt);
 
     /**
-     * @type {Object}
+     * @type {Object} Contiene los datos editados del usuario que se guardarán en la base de datos.
      */
 
-    const data = {
+    const newData = {
         user_id: id, // renombro la propiedad para que coincida con el model
+        role_id: req.body.role_id || 2, // si no se especifica (form 'Mi perfil' –user–), el valor por defecto será 2 ('user'); esto es porque el admin desde su dashboard sí tendrá la opción de modificar el role
         ...req.body // spread de todas las propiedades que recibe el objeto 'req.body' del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin
     };
 
     try {
 
-        const emailExists = await modelGetUserByEmail(email);
+        const { ok: emailExists, data } = await modelGetUserByEmail(email); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
+        // renombro la propiedad 'ok' para facilitar interpretación del condicional
 
-        if(emailExists.ok){ // condicional: si 'ok' (propiedad del objeto que devuelve la respuesta del model) es true, el e-mail existe y se pueden dar dos casos:
+        if(emailExists){ // condicional: si el e-mail existe, se pueden dar dos casos:
 
-            const [ { user_id } ] = emailExists.data; // destructuración de la propiedad 'user_id' del objeto del array de la propiedad 'data' que devuelve el objeto de la respuesta del model
+            const { user_id } = data; // destructuración de la propiedad 'user_id' del objeto 'data'
 
-            if(user_id == id){ // si 'user_id' (propiedad que devuelve el model) coincide con 'id' (recibido por params –usuario actual–), el usuario se actualiza porque el e-mail está guardado en la base de datos con su 'user_id'; es decir, el usuario está registrado con ese e-mail
+            // 'user_id', propiedad que devuelve el model; 'id', propiedad recibida en el objeto 'req.params' (usuario actual)
+            if(user_id == id){ // caso 1: el e-mail y el 'user_id' coinciden con el mismo usuario en la base de datos, es decir, corresponde al usuario que está actualizando sus datos
 
-                await modelUpdateUser(data);
+                await modelUpdateUser(newData); // actualizar datos del usuario
+
+                // obtengo los datos actualizados del usuario para pasarlos como argumento a la función que genera el token
+                const { data: updatedData } = await modelGetUserByEmail(email);  // destructuración de la propiedad 'data' del objeto que devuelve el model
+                // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos (propiedad 'data' del model –línea 222–)
+
+                const token = generateJWT(updatedData); // generar token
 
                 res.status(200).json({
                     ok: true,
                     msg: 'Usuario actualizado con éxito.',
-                    data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+                    updatedData, // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+                    token // devuelve el token
                 });
 
-            } else {
+            } else { // caso 2: el e-mail ya está registrado en la base de datos con otro 'user_id'
 
-                res.status(400).json({ //? status 400 o 200?
+                res.status(400).json({
                     ok: false,
                     msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
                 });
 
             };
 
-        } else { // condicional: el e-mail no existe en la base de datos, por ende se actualiza el usuario
+        } else { // condicional: el e-mail no existe en la base de datos y, por ende, se actualiza el usuario
 
-            await modelUpdateUser(data);
+            await modelUpdateUser(newData); // actualizar datos del usuario
+
+            // obtengo los datos actualizados del usuario para pasarlos como argumento a la función que genera el token
+            const { data: updatedData } = await modelGetUserByEmail(email);  // destructuración de la propiedad 'data' del objeto que devuelve el model
+            // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos (propiedad 'data' del model –línea 222–)            
+
+            const token = generateJWT(updatedData); // generar token
 
             return res.status(200).json({
                 ok: true,
                 msg: 'Usuario actualizado con éxito.',
-                data // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+                updatedData, // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
+                token // devuelve el token
             });
 
         };
