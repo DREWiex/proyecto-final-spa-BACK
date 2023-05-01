@@ -118,24 +118,24 @@ const addRoom = async (req, res) => {
 
     try {
 
-        // VALIDACIÓN 1: INPUT ERRORS
+        //* VALIDACIÓN 1: INPUT ERRORS
 
         if(res.errors){ // condicional: validación de errores en los inputs del form
 
-            return res.status(200).json({
+            return res.status(400).json({
                 ok: false,
                 errors: res.errors // devuelve un objeto con los errores
             });
 
         };
 
-        // CREAR SALA DE ESTUDIO
+        //* CREAR SALA DE ESTUDIO
         
-        await modelAddRoom(newRoom); // crear nueva sala de estudio en la base de datos
+        await modelAddRoom(newRoom); // crear una nueva sala de estudio en la base de datos
 
         res.status(201).json({
             ok: true,
-            newRoom // devuelve los datos recibidos del form del dashboard admin más el 'role_id' que, por defecto, será 1 ('admin')
+            newRoom // devuelve un objeto con los datos recibidos del form del dashboard admin más el 'role_id' que, por defecto, será 1 ('admin')
         });
 
     } catch (error) {
@@ -176,18 +176,7 @@ const updateRoom = async (req, res) => {
 
     try {
 
-        // VALIDACIÓN 1: INPUT ERRORS
-
-        if(res.errors){ // condicional: validación de errores en los inputs del form
-
-            return res.status(200).json({
-                ok: false,
-                errors: res.errors // devuelve un objeto con los errores
-            });
-
-        };
-
-        // VALIDACIÓN 2: ID
+        //* VALIDACIÓN 1: ID
 
         const { ok } = await modelGetRoomByID(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
@@ -200,7 +189,18 @@ const updateRoom = async (req, res) => {
 
         };
 
-        // ACTUALIZAR SALA DE ESTUDIO
+        //* VALIDACIÓN 2: INPUT ERRORS
+
+        if(res.errors){ // condicional: validación de errores en los inputs del form
+
+            return res.status(400).json({
+                ok: false,
+                errors: res.errors // devuelve un objeto con los errores
+            });
+
+        };
+
+        //* ACTUALIZAR SALA DE ESTUDIO
 
         await modelUpdateRoom(newData); // actualizar la sala de estudio en la base de datos
 
@@ -210,7 +210,7 @@ const updateRoom = async (req, res) => {
 
         res.status(200).json({
             ok: true,
-            updatedData // devuelve los datos de la sala de estudio ya actualizados en la base de datos
+            updatedData // devuelve un objeto con los datos de la sala de estudio ya actualizados en la base de datos
         });
 
     } catch (error) {

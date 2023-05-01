@@ -153,31 +153,31 @@ const searchReservations = async (req, res) => {
  */
 const addReservation = async (req, res) => {
 
-    /**
-     * @type {Object}
-     */
-
-    const data = req.body; // recibe el objeto body del form del usuario o del dashboard admin (recibe 'user_id' del input hidden del form)
+    const newReservation = req.body; // recibe el objeto body del form del usuario o del dashboard admin (recibe 'user_id' del input hidden del form)
 
     try {
-        
-        const { ok } = await modelAddReservation(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-        if(!ok){  //? condicional: si 'ok' es false, es por un error y entra en el catch del model
+        //* VALIDACIÓN 1: INPUT ERRORS
 
-            res.status(400).json({
+        if(res.errors){ // condicional: validación de errores en los inputs del form
+
+            return res.status(400).json({
                 ok: false,
-                msg: 'ERROR: no se ha podido realizar la reserva.'
-            });
-
-        } else {
-
-            res.status(201).json({
-                ok: true,
-                data // devuelve los datos recibidos del form del usuario o del dashboard admin //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
+                errors: res.errors // devuelve un objeto con los errores
             });
 
         };
+
+        //! aquí habría que filtrar si coincide con alguna otra reserva (fecha, hora)
+
+        //* CREAR RESERVA
+        
+        await modelAddReservation(newReservation); // crear una nueva reserva en la base de datos
+
+        res.status(201).json({
+            ok: true,
+            newReservation // devuelve un objeto con los datos recibidos del form del usuario o del dashboard admin //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
+        });
 
     } catch (error) {
         
@@ -209,43 +209,51 @@ const updateReservation = async (req, res) => {
      * @type {Object}
      */
 
-    const data = {
+    const newData = {
         reservation_id: id, // renombro la propiedad para que coincida con el model
-        ...req.body // recibe el objeto body del form del usuario o del dashboard admin
+        ...req.body // recibe el objeto 'req.body' del form del usuario o del dashboard admin (recibe 'user_id' del input hidden del form)
     };
 
     try {
 
-        const { result } = await modelGetReservationByID(id); // destructuración de la propiedad 'result' del objeto que devuelve el model
+        //* VALIDACIÓN 1: ID
 
-        const { rowCount } = result; // destructuración de la propiedad 'rowCount' del objeto 'result'
+        const { ok } = await modelGetReservationByID(id); // destructuración de la propiedad 'ok' del objeto que devuelve el model
 
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existe reserva con ese id en la base de datos
+        if(!ok){ // condicional: si 'ok' es false, la reserva no existe
 
-            return res.status(200).json({
+            return res.status(400).json({
                 ok: false,
                 msg: `ERROR: no existe ninguna reserva con el ID "${id}".`
             });
 
         };
 
-        const { ok } = await modelUpdateReservation(data); // destructuración de la propiedad 'ok' del objeto que devuelve el model
+        //* VALIDACIÓN 2: INPUT ERRORS
 
-        if(!ok){ //? condicional: si 'ok' es false, es por un error y entra en el catch del model
+        if(res.errors){ // condicional: validación de errores en los inputs del form
 
-            res.status(400).json({
+            return res.status(400).json({
                 ok: false,
-                msg: `ERROR: la reserva con ID "${id}" no ha sido actualizada.`
-            });
-
-        } else {
-
-            res.status(200).json({
-                ok: true,
-                data // devuelve los datos recibidos del form del usuario o del dashboard admin //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
+                errors: res.errors // devuelve un objeto con los errores
             });
 
         };
+
+        //! aquí habría que filtrar si coincide con alguna otra reserva (fecha, hora)
+
+        //* ACTUALIZAR RESERVA
+
+        await modelUpdateReservation(newData); // actualizar la reserva en la base de datos
+
+        // obtengo los datos actualizados de la reserva
+        const { data: updatedData } = await modelGetReservationByID(id); // destructuración de la propiedad 'data' del objeto que devuelve el model
+        // renombro la propiedad 'data' para facilitar la interpretación
+
+        res.status(200).json({
+            ok: true,
+            updatedData // devuelve un objeto con los datos de la sala de estudio ya actualizados en la base de datos //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
+        });
 
     } catch (error) {
         

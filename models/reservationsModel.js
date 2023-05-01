@@ -119,10 +119,7 @@ const modelAddReservation = async (data) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -130,10 +127,7 @@ const modelAddReservation = async (data) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELADDRESERVATION
 
@@ -143,6 +137,7 @@ const modelUpdateReservation = async (data) => {
     let client, result;
 
     const {
+        user_id,
         room_id,
         reservation_date,
         start_time,
@@ -155,6 +150,7 @@ const modelUpdateReservation = async (data) => {
         client = await pool.connect();
 
         result = await client.query(reservations.queryUpdateReservation, [
+            user_id,
             room_id,
             reservation_date,
             start_time,
@@ -164,10 +160,7 @@ const modelUpdateReservation = async (data) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -175,10 +168,7 @@ const modelUpdateReservation = async (data) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELUPDATERESERVATION
 

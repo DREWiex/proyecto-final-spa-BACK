@@ -26,7 +26,7 @@ const login = async (req, res) => {
 
         if(res.errors){
 
-            return res.status(200).json({
+            return res.status(400).json({
                 ok: false,
                 errors: res.errors // devuelve un objeto con los errores
             });
