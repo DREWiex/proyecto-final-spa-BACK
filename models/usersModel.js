@@ -18,14 +18,13 @@ const modelGetUsers = async () => {
 
         client = await pool.connect();
 
-        result = await client.query(users.queryGetUsers);
+        const { rowCount, rows } = await client.query(users.queryGetUsers);
+
+        rowCount == 0 ? result = { ok: false, data: rows } : result = { ok: true, data: rows };
         
     } catch (error) {
 
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -33,10 +32,7 @@ const modelGetUsers = async () => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
     
 }; //!FUNC-MODELGETUSERS
 
@@ -87,7 +83,7 @@ const modelAddUser = async (data) => {
         
         client = await pool.connect();
 
-        const { rowCount } = await client.query(users.queryAddUser, [
+        result = await client.query(users.queryAddUser, [
             role_id,
             first_name,
             last_name,
@@ -95,8 +91,6 @@ const modelAddUser = async (data) => {
             password,
             avatar
         ]);
-
-        rowCount == 1 ? result = true : result = false; // condicional: true = el usuario se registró / false = el usuario no se registró
 
     } catch (error) {
         

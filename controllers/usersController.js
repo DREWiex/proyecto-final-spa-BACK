@@ -22,31 +22,20 @@ const getUsers = async (req, res) => {
 
     try {
 
-        const { ok, result } = await modelGetUsers(); // destructuración de las propiedades 'ok' y 'result' del objeto que devuelve el model
+        const { ok, data } = await modelGetUsers(); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
 
-        if(!ok){ // condicional: si 'ok' es false, es por un error y entra en el catch del model
+        if(!ok){ // condicional: si 'ok' es false, no existen usuarios en la base de datos
 
-            return res.status(400).json({
+            res.status(400).json({
                 ok: false,
-                msg: 'ERROR: no se han podido obtener resultados.'
-            });
-
-        };
-
-        const { rowCount, rows } = result; // destructuración de las propiedades 'rowCount' y 'rows' del objeto 'result'
-
-        if(rowCount == 0){ // condicional: si 'rowCount' es igual a 0, no existen usuarios en la base de datos
-
-            res.status(200).json({
-                ok: false,
-                msg: 'No hay usuarios registrados en la base de datos.'
+                msg: 'ERROR: no hay usuarios registrados en la base de datos.'
             });
 
         } else {
 
             res.status(200).json({
                 ok: true,
-                data: rows  // devuelve un array de objetos con las propiedades del objeto que contiene los datos de los usuarios
+                data  // devuelve un array de objetos con las propiedades del objeto que contiene los datos de los usuarios
             });
 
         };
@@ -92,7 +81,7 @@ const getUserByID = async (req, res) => {
 
             res.status(200).json({
                 ok: true,
-                data // devuelve un objeto con los datos del usuario que están guardados en la base de datos
+                data // devuelve un objeto con los datos del usuario
             });
 
         };
@@ -128,6 +117,7 @@ const addUser = async (req, res) => {
     req.body.password = bcrypt.hashSync(req.body.password, salt);
 
     /**
+     * Contiene los datos del nuevo usuario que se guardarán en la base de datos.
      * @type {Object}
      */
 
@@ -137,6 +127,19 @@ const addUser = async (req, res) => {
     };
 
     try {
+
+        //* VALIDACIÓN 1: INPUT ERRORS
+
+        if(res.errors){ // condicional: validación de errores en los inputs del form
+
+            return res.status(400).json({
+                ok: false,
+                errors: res.errors // devuelve un objeto con los errores
+            });
+
+        };
+
+        //* VALIDACIÓN 2: E-MAIL
 
         const emailExists = await modelGetUserByEmail(email);
 
@@ -149,31 +152,22 @@ const addUser = async (req, res) => {
 
         };
 
-        const register = await modelAddUser(data);
+        //* CREAR/REGISTRAR USUARIO
 
-        if(!register){ // condicional: si register es false
+        await modelAddUser(data); // crear/registrar un nuevo usuario en la base de datos
 
-            res.status(400).json({
-                ok: false,
-                msg: 'ERROR: el usuario no ha sido registrado.'
-            });
+        // obtengo los datos del nuevo usuario para pasarlos como argumento a la función que genera el token
+        const { data: newUser } = await modelGetUserByEmail(email); // destructuración de la propiedad 'data' del objeto que devuelve el model
+        // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos ('const data')
 
-        } else {
+        const token = generateJWT(newUser); // generar token
 
-            // obtengo los datos del nuevo usuario para pasarlos como argumento a la función que genera el token
-            const { data: newUser } = await modelGetUserByEmail(email); // destructuración de la propiedad 'data' del objeto que devuelve el model
-            // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos ('const data')
-
-            const token = generateJWT(newUser); // generar token
-
-            res.status(200).json({
-                ok: true,
-                msg: 'El usuario se ha registrado con éxito.',
-                newUser,  // devuelve los datos recibidos del form de registro o del dashboard admin más el 'role_id' que, por defecto, será 2 ('user')
-                token // devuelve el token
-            });
-
-        };
+        res.status(200).json({
+            ok: true,
+            msg: 'El usuario se ha registrado con éxito.',
+            newUser,  // devuelve los datos del usuario ya registrados en la base de datos
+            token
+        });
 
     } catch (error) {
 
@@ -208,7 +202,8 @@ const updateUser = async (req, res) => {
     req.body.password = bcrypt.hashSync(req.body.password, salt);
 
     /**
-     * @type {Object} Contiene los datos editados del usuario que se guardarán en la base de datos.
+     * Contiene los datos editados del usuario que se actualizarán en la base de datos.
+     * @type {Object}
      */
 
     const newData = {
@@ -233,7 +228,19 @@ const updateUser = async (req, res) => {
         };
 
 
-        //! VALIDACIÓN 2: E-MAIL
+        //! VALIDACIÓN 2: INPUT ERRORS
+
+        if(res.errors){
+
+            return res.status(400).json({
+                ok: false,
+                errors: res.errors // devuelve un objeto con los errores
+            });
+
+        };
+
+
+        //! VALIDACIÓN 3: E-MAIL
 
         const { ok: emailExists, data } = await modelGetUserByEmail(email); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
         // renombro la propiedad 'ok' para facilitar interpretación del condicional
@@ -256,8 +263,8 @@ const updateUser = async (req, res) => {
                 res.status(200).json({
                     ok: true,
                     msg: 'Usuario actualizado con éxito.',
-                    updatedData, // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
-                    token // devuelve el token
+                    updatedData, // devuelve los datos del usuario ya actualizados en la base de datos
+                    token
                 });
 
             } else { // caso 2: el e-mail ya está registrado en la base de datos con otro 'user_id'
@@ -275,15 +282,15 @@ const updateUser = async (req, res) => {
 
             // obtengo los datos actualizados del usuario para pasarlos como argumento a la función que genera el token
             const { data: updatedData } = await modelGetUserByEmail(email);  // destructuración de la propiedad 'data' del objeto que devuelve el model
-            // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos (propiedad 'data' del model –línea 222–)            
+            // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos            
 
             const token = generateJWT(updatedData); // generar token
 
             res.status(200).json({
                 ok: true,
                 msg: 'Usuario actualizado con éxito.',
-                updatedData, // devuelve los datos recibidos del form desde la página 'Mi perfil' (–user–) o desde el dashboard del admin más el 'user_id' recibido por params
-                token // devuelve el token
+                updatedData, // devuelve los datos del usuario ya actualizados en la base de datos
+                token
             });
 
         };

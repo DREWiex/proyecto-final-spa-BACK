@@ -18,14 +18,13 @@ const modelGetReservations = async () => {
         
         client = await pool.connect();
 
-        result = await client.query(reservations.queryGetReservations);
+        const { rowCount, rows } = await client.query(reservations.queryGetReservations);
+
+        rowCount == 0 ? result = { ok: false, data: rows } : result = { ok: true, data: rows };
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -33,10 +32,7 @@ const modelGetReservations = async () => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELGETRESERVATIONS
 
@@ -49,14 +45,15 @@ const modelGetReservationByID = async (id) => {
         
         client = await pool.connect()
 
-        result = await client.query(reservations.queryGetReservationByID, [ id ]);
+        const { rowCount, rows } = await client.query(reservations.queryGetReservationByID, [ id ]);
+
+        const [ data ] = rows; // destructuración del array de la propiedad 'rows'
+
+        rowCount == 0 ? result = { ok: false, data } : result = { ok: true, data }; // si es igual a 0, no existe la reserva / si es distinto de 0, sí existe la reserva
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -64,10 +61,7 @@ const modelGetReservationByID = async (id) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELGETRESERVATIONBYID
 
@@ -80,14 +74,13 @@ const modelSearchReservations = async (id) => {
         
         client = await pool.connect();
 
-        result = await client.query(reservations.querySearchReservations, [ id ]);
+        const { rowCount, rows } = await client.query(reservations.querySearchReservations, [ id ]);
+
+        rowCount == 0 ? result = { ok: false, data: rows } : result = { ok: true, data: rows }; // si es igual a 0, no existen reservas para la sala de estudio / si es distinto de 0, sí existen reservas para la sala de estudio
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -95,10 +88,7 @@ const modelSearchReservations = async (id) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELSEARCHRESERVATIONS
 
@@ -129,10 +119,7 @@ const modelAddReservation = async (data) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -140,10 +127,7 @@ const modelAddReservation = async (data) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELADDRESERVATION
 
@@ -153,6 +137,7 @@ const modelUpdateReservation = async (data) => {
     let client, result;
 
     const {
+        user_id,
         room_id,
         reservation_date,
         start_time,
@@ -165,6 +150,7 @@ const modelUpdateReservation = async (data) => {
         client = await pool.connect();
 
         result = await client.query(reservations.queryUpdateReservation, [
+            user_id,
             room_id,
             reservation_date,
             start_time,
@@ -174,10 +160,7 @@ const modelUpdateReservation = async (data) => {
 
     } catch (error) {
         
-        throw {
-            ok: false,
-            error
-        };
+        throw error;
 
     } finally {
 
@@ -185,10 +168,7 @@ const modelUpdateReservation = async (data) => {
 
     };
 
-    return {
-        ok: true,
-        result
-    };
+    return result;
 
 }; //!FUNC-MODELUPDATERESERVATION
 

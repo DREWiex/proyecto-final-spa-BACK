@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const router = Router();
 
+const { validateReservation } = require('../validators/reservation')
+
 const {
     getReservations,
     getReservationByID,
@@ -21,10 +23,10 @@ router.get('/:id', getReservationByID);
 router.get('/search/:id', searchReservations);
 
 // ADD RESERVATION - crear una nueva reserva (user y admin)
-router.post('/', addReservation);
+router.post('/', validateReservation, addReservation);
 
 // UPDATE RESERVATION - editar una reserva por id (user y admin)
-router.put('/:id', updateReservation);
+router.put('/:id', validateReservation, updateReservation);
 
 // DELETE RESERVATION - eliminar una reserva por id (user y admin)
 router.delete('/:id', deleteReservation);

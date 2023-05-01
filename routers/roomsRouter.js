@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const router = Router();
 
+const { validateRoom } = require('../validators/room');
+
 const {
     getRooms,
     getRoomByID,
@@ -17,10 +19,10 @@ router.get('/', getRooms);
 router.get('/:id', getRoomByID);
 
 // ADD ROOM - crear una nueva sala de estudio (dashboard - admin)
-router.post('/', addRoom);
+router.post('/', validateRoom, addRoom);
 
 // UPDATE ROOM - editar una sala de estudio por id (dashboard - admin)
-router.put('/:id', updateRoom);
+router.put('/:id', validateRoom, updateRoom);
 
 // DELETE ROOM - eliminar una sala de estudio por id (dashboard - admin)
 router.delete('/:id', deleteRoom);

@@ -75,8 +75,8 @@ const reservations = {
     VALUES ($1, $2, $3, $4, $5)`,
     queryUpdateReservation:`
     UPDATE reservations
-    SET room_id=$1, reservation_date=$2, start_time=$3, end_time=$4
-    WHERE reservation_id=$5`,
+    SET user_id=$1, room_id=$2, reservation_date=$3, start_time=$4, end_time=$5
+    WHERE reservation_id=$6`,
     queryDeleteReservation:`
     DELETE FROM reservations
     WHERE reservation_id=$1`

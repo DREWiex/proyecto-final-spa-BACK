@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const router = Router();
 
+const { validateUser } = require('../validators/user');
+
 const {
     getUsers,
     getUserByID,
@@ -17,10 +19,10 @@ router.get('/', getUsers);
 router.get('/:id', getUserByID);
 
 // ADD USER - crear un nuevo usuario (form register / dashboard admin)
-router.post('/', addUser);
+router.post('/', validateUser, addUser);
 
 // UPDATE USER - editar un usuario según su id (front: mi perfil / dashboard admin)
-router.put('/:id', updateUser);
+router.put('/:id', validateUser, updateUser);
 
 //DELETE USER - eliminar un usuario según su id (front: mi perfil / dashboard admin)
 router.delete('/:id', deleteUser);
