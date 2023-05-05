@@ -22,27 +22,27 @@ const login = async (req, res) => {
 
     try {
 
-        //! VALIDACIÓN 1: INPUT ERRORS
+        //* VALIDACIÓN 1: INPUT ERRORS
 
         if(res.errors){
 
-            const error = [];
+            const error = []; // declaro la constante 'error' como un array vacío
 
-            Object.entries(res.errors).forEach(([key, value]) => {
+            Object.entries(res.errors).forEach(([key, value]) => { // iteración de las propiedades del objeto 'res.errors'
 
-                error.push(value.msg);
+                error.push(value.msg); // envía la propiedad 'msg' de cada key del objeto al array 'error'
 
             });
             
             return res.status(400).json({
                 ok: false,
-                error // devuelve un objeto con los errores
+                error // devuelve un array con los errores
             });
 
         };
 
 
-        //! VALIDACIÓN 2: CREDENCIALES
+        //* VALIDACIÓN 2: CREDENCIALES
         
         const { ok: emailExists, data } = await modelGetUserByEmail(loginEmail); // destructuración de las propiedades 'ok' y 'data' del objeto que devuelve el model
         // renombro la propiedad 'ok' para facilitar interpretación del condicional
