@@ -26,9 +26,17 @@ const login = async (req, res) => {
 
         if(res.errors){
 
+            const error = [];
+
+            Object.entries(res.errors).forEach(([key, value]) => {
+
+                error.push(value.msg);
+
+            });
+            
             return res.status(400).json({
                 ok: false,
-                errors: res.errors // devuelve un objeto con los errores
+                error // devuelve un objeto con los errores
             });
 
         };
@@ -43,7 +51,7 @@ const login = async (req, res) => {
 
             return res.status(401).json({
                 ok: false,
-                msg: 'ERROR: e-mail o contraseña incorrectos.'
+                error: 'E-mail o contraseña incorrectos.'
             });
 
         };
@@ -56,7 +64,7 @@ const login = async (req, res) => {
 
             return res.status(401).json({
                 ok: false,
-                msg: 'ERROR: e-mail o contraseña incorrectos.'
+                error: 'ERROR: e-mail o contraseña incorrectos.'
             });
 
         }

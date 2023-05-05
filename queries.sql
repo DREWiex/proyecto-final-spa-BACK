@@ -75,7 +75,7 @@ VALUES
 -- Crear usuario con role 'admin' --
 INSERT INTO users(first_name, last_name, email, password, avatar, role_id)
 VALUES
-('Andrés', 'León', 'andres@correo.com','123456', 'url_avatar', 1);
+('Andrés', 'León', 'admin@correo.com','123456', 'url_avatar', 1);
 
 -- Crear usuarios con role 'user' --
 INSERT INTO users(first_name, last_name, email, password, avatar, role_id)

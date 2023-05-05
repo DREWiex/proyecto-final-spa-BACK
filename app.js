@@ -18,17 +18,7 @@ app.use(express.json());
 app.use('/api/v1/users', require('./routers/usersRouter')); // users API
 app.use('/api/v1/rooms', require('./routers/roomsRouter')); // rooms API
 app.use('/api/v1/reservations', require('./routers/reservationsRouter')); // reservations API
-app.use('/auth', require('./routers/authRouter')); // log in - out
-
-// 404
-app.use((req, res, next) => {
-
-    res.status(404).send('404', {
-        error: '404',
-        msg: 'Not found'
-    });
-
-});
+app.use('/auth', require('./routers/authRouter')); // login
 
 
 app.listen(port, () => console.log(`Servidor a la escucha del puerto: ${port}`));
