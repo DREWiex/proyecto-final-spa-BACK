@@ -28,7 +28,7 @@ const getUsers = async (req, res) => {
 
             res.status(400).json({
                 ok: false,
-                msg: 'ERROR: no hay usuarios registrados en la base de datos.'
+                error: 'ERROR: no hay usuarios registrados en la base de datos.'
             });
 
         } else {
@@ -336,7 +336,7 @@ const deleteUser = async (req, res) => {
 
             res.status(400).json({
                 ok: false,
-                msg: `ERROR: el usuario con ID "${id}" no existe en la base de datos.`
+                error: `ERROR: el usuario con ID "${id}" no existe en la base de datos.`
             });
 
         } else {
