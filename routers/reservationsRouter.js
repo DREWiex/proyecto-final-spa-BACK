@@ -30,7 +30,7 @@ router.get('/search/:id', searchReservations);
 router.post('/', validateReservation, addReservation);
 
 // UPDATE RESERVATION - editar una reserva por id (user y admin)
-router.put('/:id', validateReservation, updateReservation);
+router.put('/:id', updateReservation);
 
 // DELETE RESERVATION - eliminar una reserva por id (user y admin)
 router.delete('/:id', deleteReservation);

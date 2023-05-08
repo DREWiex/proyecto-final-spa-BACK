@@ -287,11 +287,19 @@ const updateReservation = async (req, res) => {
 
         //* VALIDACIÓN 2: INPUT ERRORS
 
-        if(res.errors){ // condicional: validación de errores en los inputs del form
+        if(res.errors){
 
+            const error = []; // declaro la constante 'error' como un array vacío
+
+            Object.entries(res.errors).forEach(([key, value]) => { // iteración de las propiedades del objeto 'res.errors'
+
+                error.push(value.msg); // envía la propiedad 'msg' de cada key del objeto al array 'error'
+
+            });
+            
             return res.status(400).json({
                 ok: false,
-                errors: res.errors // devuelve un objeto con los errores
+                error // devuelve un array con los errores
             });
 
         };
@@ -303,12 +311,11 @@ const updateReservation = async (req, res) => {
         await modelUpdateReservation(newData); // actualizar la reserva en la base de datos
 
         // obtengo los datos actualizados de la reserva
-        const { data: updatedData } = await modelGetReservationByID(id); // destructuración de la propiedad 'data' del objeto que devuelve el model
-        // renombro la propiedad 'data' para facilitar la interpretación
+        const { data } = await modelGetReservationByID(id); // destructuración de la propiedad 'data' del objeto que devuelve el model
 
         res.status(200).json({
             ok: true,
-            updatedData // devuelve un objeto con los datos de la sala de estudio ya actualizados en la base de datos //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
+            data // devuelve un objeto con los datos de la sala de estudio ya actualizados en la base de datos //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
         });
 
     } catch (error) {
