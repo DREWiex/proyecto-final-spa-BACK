@@ -207,11 +207,19 @@ const addReservation = async (req, res) => {
 
         //* VALIDACIÓN 1: INPUT ERRORS
 
-        if(res.errors){ // condicional: validación de errores en los inputs del form
+        if(res.errors){
 
+            const error = []; // declaro la constante 'error' como un array vacío
+
+            Object.entries(res.errors).forEach(([key, value]) => { // iteración de las propiedades del objeto 'res.errors'
+
+                error.push(value.msg); // envía la propiedad 'msg' de cada key del objeto al array 'error'
+
+            });
+            
             return res.status(400).json({
                 ok: false,
-                errors: res.errors // devuelve un objeto con los errores
+                error // devuelve un array con los errores
             });
 
         };
