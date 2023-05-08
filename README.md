@@ -1,11 +1,15 @@
-# Proyecto final SPA - Studyverse
-### Desarrollador: *Andrés León*
+# Proyecto final SPA - Backend
+## Studyverse
+
+Desarrollado por: **Andrés León**
 
 ---
 
 ### Introducción
 
-[…] en el archivo ```.templates.env``` encontrarán las propiedades utilizadas como variables de entorno.
+**Studyverse** es una aplicación que permite reservar salas de estudio a los alumnos. Está compuesta por dos
+
+Despliegue hecho en Render: https://proyecto-final-spa-back.onrender.com
 
 ---
 
@@ -28,6 +32,10 @@ npm run start
 ---
 
 ### Tecnologías
+
+- **Node.js**
+- **Express**
+- **PostgreSQL**
 
 ---
 
@@ -55,6 +63,20 @@ A continuación, los enlaces de las distintas APIs del proyecto:
 
 ---
 
-### Documentación
+### Próxima versión
 
-*(desplegar en GitPages)*
+- Recuperar/cambiar contraseña.
+
+- Implementación del calendario utilizando las librerías react-big-calendar y Datepicker.
+
+- Gestión de las salas de estudio y de las reservas desde el dashboard del admin (CRUD).
+
+- Crear dos nuevas tablas en PostgreSQL:
+
+    - Status: para manejar el estado de la reserva:
+
+        - Reservada.
+        - Pendiente.
+        - Anulada.
+
+    - Password: para gestionar la recuperación de contraseña del usuario. En ella se relacionará el usuario con el token que se genere temporalmente al enviarse el e-mail para la recuperación (EmailJS).
