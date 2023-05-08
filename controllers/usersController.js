@@ -28,7 +28,7 @@ const getUsers = async (req, res) => {
 
             res.status(400).json({
                 ok: false,
-                msg: 'ERROR: no hay usuarios registrados en la base de datos.'
+                error: 'ERROR: no hay usuarios registrados en la base de datos.'
             });
 
         } else {
@@ -121,7 +121,7 @@ const addUser = async (req, res) => {
      * @type {Object}
      */
 
-    const data = {
+    const newData = {
         role_id: req.body.role_id || 2, // si no se especifica (registro –índex–), el valor por defecto será 2 ('user'); esto es porque el admin desde su dashboard sí tendrá la opción de elegir el role
         ...req.body // recibe el objeto body del form de registro o del dashboard del admin
     };
@@ -130,11 +130,19 @@ const addUser = async (req, res) => {
 
         //* VALIDACIÓN 1: INPUT ERRORS
 
-        if(res.errors){ // condicional: validación de errores en los inputs del form
+        if(res.errors){
 
+            const error = []; // declaro la constante 'error' como un array vacío
+
+            Object.entries(res.errors).forEach(([key, value]) => { // iteración de las propiedades del objeto 'res.errors'
+
+                error.push(value.msg); // envía la propiedad 'msg' de cada key del objeto al array 'error'
+
+            });
+            
             return res.status(400).json({
                 ok: false,
-                errors: res.errors // devuelve un objeto con los errores
+                error // devuelve un array con los errores
             });
 
         };
@@ -145,27 +153,26 @@ const addUser = async (req, res) => {
 
         if(emailExists.ok){ // condicional: si el e-mail existe
 
-            return res.status(200).json({
+            return res.status(401).json({
                 ok: false,
-                msg: `ERROR: el e-mail "${email}" ya existe en la base de datos.`
+                error: `El e-mail "${email}" ya existe en la base de datos.`
             });
 
         };
 
         //* CREAR/REGISTRAR USUARIO
 
-        await modelAddUser(data); // crear/registrar un nuevo usuario en la base de datos
+        await modelAddUser(newData); // crear/registrar un nuevo usuario en la base de datos
 
         // obtengo los datos del nuevo usuario para pasarlos como argumento a la función que genera el token
-        const { data: newUser } = await modelGetUserByEmail(email); // destructuración de la propiedad 'data' del objeto que devuelve el model
-        // renombro la propiedad 'data' para facilitar la interpretación y evitar posibles conflictos ('const data')
+        const { data } = await modelGetUserByEmail(email); // destructuración de la propiedad 'data' del objeto que devuelve el model
 
-        const token = generateJWT(newUser); // generar token
+        const token = generateJWT(data); // generar token
 
-        res.status(200).json({
+        res.status(201).json({
             ok: true,
             msg: 'El usuario se ha registrado con éxito.',
-            newUser,  // devuelve los datos del usuario ya registrados en la base de datos
+            data,  // devuelve los datos del usuario ya registrados en la base de datos
             token
         });
 
@@ -329,7 +336,7 @@ const deleteUser = async (req, res) => {
 
             res.status(400).json({
                 ok: false,
-                msg: `ERROR: el usuario con ID "${id}" no existe en la base de datos.`
+                error: `ERROR: el usuario con ID "${id}" no existe en la base de datos.`
             });
 
         } else {

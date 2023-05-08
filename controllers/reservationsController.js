@@ -99,13 +99,61 @@ const getReservationByID = async (req, res) => {
 
 
 /**
+ * Obtener por ID del usuario todas las reservas de la base de datos.
+ * @function getReservationsByUserID
+ * @async
+ * @param {Object} req Objeto de solicitud: recibe 'params'.
+ * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
+ */
+const getReservationsByUserID = async (req, res) => {
+
+    const { id } = req.params; // destructuración del 'id' del usuario ('user_id') recibido en el objeto 'req.params'
+
+    try {
+        
+        const { data } = await modelGetReservations(); // destructuración de la propiedad 'data' del objeto que devuelve el model
+
+        const arrayReservations = data.filter(reservation => reservation.user_id == id); // filtra las reservas que correspondan al user_id recibido por params
+
+        if(arrayReservations.length == 0){ // condicional: si el array está vacío, el usuario no tiene ninguna reserva
+
+            res.status(400).json({
+                ok: false,
+                error: `El usuario con ID "${id}" no tiene reservas.`
+            });
+
+        } else {
+
+            res.status(200).json({
+                ok: true,
+                data: arrayReservations // devuelve un array de objetos con los datos de las reservas hechas por el usuario
+            });
+
+        };
+
+    } catch (error) {
+        
+        console.log(error);
+
+        res.status(500).json({
+            ok: false,
+            msg: 'ERROR: contacte con el administrador.',
+            error
+        });
+
+    };
+
+}; //!FUNC-GETRESERVATIONSBYUSERID
+
+
+/**
  * Obtener por ID las reservas de una sala de la base de datos.
  * @function searchReservations
  * @async
  * @param {Object} req Objeto de solicitud: recibe 'params'.
  * @param {Object} res Objeto de respuesta: devuelve 'status' y 'json'.
  */
-const searchReservations = async (req, res) => {
+const searchReservations = async (req, res) => { //? do I need it?
 
     const { id } = req.params;  // destructuración del 'id' de la sala de estudio ('room_id') recibido en el objeto 'req.params' (el front-end lo recibe del form desde el usuario o desde el dashboard admin y se lo pasa a la url del fetch)
 
@@ -159,11 +207,19 @@ const addReservation = async (req, res) => {
 
         //* VALIDACIÓN 1: INPUT ERRORS
 
-        if(res.errors){ // condicional: validación de errores en los inputs del form
+        if(res.errors){
 
+            const error = []; // declaro la constante 'error' como un array vacío
+
+            Object.entries(res.errors).forEach(([key, value]) => { // iteración de las propiedades del objeto 'res.errors'
+
+                error.push(value.msg); // envía la propiedad 'msg' de cada key del objeto al array 'error'
+
+            });
+            
             return res.status(400).json({
                 ok: false,
-                errors: res.errors // devuelve un objeto con los errores
+                error // devuelve un array con los errores
             });
 
         };
@@ -231,11 +287,19 @@ const updateReservation = async (req, res) => {
 
         //* VALIDACIÓN 2: INPUT ERRORS
 
-        if(res.errors){ // condicional: validación de errores en los inputs del form
+        if(res.errors){
 
+            const error = []; // declaro la constante 'error' como un array vacío
+
+            Object.entries(res.errors).forEach(([key, value]) => { // iteración de las propiedades del objeto 'res.errors'
+
+                error.push(value.msg); // envía la propiedad 'msg' de cada key del objeto al array 'error'
+
+            });
+            
             return res.status(400).json({
                 ok: false,
-                errors: res.errors // devuelve un objeto con los errores
+                error // devuelve un array con los errores
             });
 
         };
@@ -247,12 +311,11 @@ const updateReservation = async (req, res) => {
         await modelUpdateReservation(newData); // actualizar la reserva en la base de datos
 
         // obtengo los datos actualizados de la reserva
-        const { data: updatedData } = await modelGetReservationByID(id); // destructuración de la propiedad 'data' del objeto que devuelve el model
-        // renombro la propiedad 'data' para facilitar la interpretación
+        const { data } = await modelGetReservationByID(id); // destructuración de la propiedad 'data' del objeto que devuelve el model
 
         res.status(200).json({
             ok: true,
-            updatedData // devuelve un objeto con los datos de la sala de estudio ya actualizados en la base de datos //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
+            data // devuelve un objeto con los datos de la sala de estudio ya actualizados en la base de datos //! en Postman devuelve la fecha de reserva incorrecta, pero en Elephant está bien
         });
 
     } catch (error) {
@@ -321,6 +384,7 @@ const deleteReservation = async (req, res) => {
 module.exports = {
     getReservations,
     getReservationByID,
+    getReservationsByUserID,
     searchReservations,
     addReservation,
     updateReservation,
