@@ -47,6 +47,14 @@ En la fase inicial, haciendo uso de la herramienta **pgAdmin 4**, realicé las p
 
 ---
 
+### Documentación
+
+La documentación ha sido desplegada en GitHub Pages.
+
+#### [Documentación](https://drewiex.github.io/proyecto-final-spa-BACK/)
+
+---
+
 ### Endpoints
 
 La documentación de los endpoints fue generada en la plataforma **Postman**, la cual también utilicé para realizar las pruebas de estos mismos.
