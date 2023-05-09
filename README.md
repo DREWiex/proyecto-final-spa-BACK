@@ -7,9 +7,12 @@ Desarrollado por: **Andrés León**
 
 ### Introducción
 
-**Studyverse** es una aplicación que permite reservar salas de estudio a los alumnos. Está compuesta por dos
+**Studyverse** es una aplicación que permite reservar salas de estudio a los alumnos que están registrados.
 
-Despliegue hecho en Render: https://proyecto-final-spa-back.onrender.com
+Consta de tres entornos:
+- Rutas públicas: login y registro.
+- Dashboard del usuario: se accede si el rol del usuario es 'user'. En esta área podrá consultar la información de sus reservas, salas de estudio y formulario de contacto.
+- Dashboard del admin: se accede con un único usuario con rol 'admin'. En esta área podrá crear, editar y eliminar usuarios, salas de estudio y reservas.
 
 ---
 
@@ -68,6 +71,12 @@ A continuación, los enlaces de las distintas APIs del proyecto:
 #### [Reservations](https://documenter.getpostman.com/view/26092515/2s93eU1Z79)
 
 #### [Auth](https://documenter.getpostman.com/view/26092515/2s93eU1Z7B)
+
+---
+
+### Despliegue
+
+Despliegue hecho en Render: https://proyecto-final-spa-back.onrender.com
 
 ---
 
